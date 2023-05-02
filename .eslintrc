@@ -1,0 +1,13 @@
+{
+  "extends": ["react-app", "plugin:prettier/recommended"],
+  "rules": {
+    "no-var": "warn",
+    "no-console": ["warn", { "allow": ["warn", "error"] }],
+    "no-unused-vars": "warn",
+    "no-multiple-empty-lines": "warn",
+    "react/jsx-key": "warn",
+    "react/jsx-pascal-case": "warn",
+    "react/no-unused-state": "warn",
+    "prettier/prettier": ["error", { "singleQuote": true }]
+  }
+}
