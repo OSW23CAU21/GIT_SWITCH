@@ -1,5 +1,5 @@
 import React from 'react';
-import FileList from '../../components/unstagedstaged/FileList';
+import FileList from './FileList';
 
 const UnstagedStaged = () => {
   return (
