@@ -1,7 +1,16 @@
 import React from 'react';
+import FileList from '../../components/unstagedstaged/FileList';
 
 const UnstagedStaged = () => {
-  return <div>UnstagedStaged 컴포넌트 입니다.</div>;
+  return (
+    <>
+      <div>Staged 컴포넌트 입니다.</div>
+      <FileList />
+
+      <div>Unstaged 컴포넌트 입니다.</div>
+      <FileList />
+    </>
+  );
 };
 
 export default UnstagedStaged;
