@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const FileList = ({ files }) => {
+const FileList = ({ files, onFileSelect }) => {
     const [selectedFiles, setSelectedFiles] = useState([]);
 
     const handleFileClick = (file) => {
@@ -9,6 +9,11 @@ const FileList = ({ files }) => {
         } else {
             setSelectedFiles([...selectedFiles, file]);
         }
+    };
+
+    const handleButtonClick = () => {
+        onFileSelect(selectedFiles);
+        setSelectedFiles([]);
     };
 
     return (
@@ -27,16 +32,10 @@ const FileList = ({ files }) => {
                     </li>
                 ))}
             </ul>
-            {selectedFiles.length > 0 && (
-                <div>
-                    선택된 파일:
-                    {selectedFiles.map((file, index) => (
-                        <span key={index}>{file.name}, </span>
-                    ))}
-                </div>
-            )}
+            <button onClick={handleButtonClick}>선택된 파일 이동</button>
         </div>
     );
 };
+
 
 export default FileList;

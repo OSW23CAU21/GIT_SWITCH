@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import FileList from './FileList';
 
 /**
@@ -15,23 +15,38 @@ import FileList from './FileList';
  *  Renaming files (committed -> staged; git mv)
  */
 
-const files = [
-    { name: 'file1.txt' },
-    { name: 'file2.txt' },
-    { name: 'file3.txt' },
+const initialFiles = [
+    { name: 'file1.txt', staged: false },
+    { name: 'file2.txt', staged: false },
+    { name: 'file3.txt', staged: false },
 ];
 
 
 const UnstagedStaged = () => {
-  return (
-    <>
-      <div>Staged 컴포넌트 입니다.</div>
-      <FileList files={files}/>
+    const [files, setFiles] = useState(initialFiles);
 
-      <div>Unstaged 컴포넌트 입니다.</div>
-      <FileList files={files}/>
-    </>
-  );
+    const handleFileSelect = (selectedFiles, staged) => {
+        const updatedFiles = files.map((file) =>
+            selectedFiles.includes(file) ? { ...file, staged } : file
+        );
+        setFiles(updatedFiles);
+    };
+
+    return (
+        <div>
+            <h1>Staged 영역</h1>
+            <FileList
+                files={files.filter((file) => file.staged)}
+                onFileSelect={(selectedFiles) => handleFileSelect(selectedFiles, false)}
+            />
+            <h1>Unstaged 영역</h1>
+            <FileList
+                files={files.filter((file) => !file.staged)}
+                onFileSelect={(selectedFiles) => handleFileSelect(selectedFiles, true)}
+            />
+        </div>
+    );
+
 };
 
 export default UnstagedStaged;
