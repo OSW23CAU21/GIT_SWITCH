@@ -22,32 +22,18 @@ function FileMangement() {
     script.onload = () => {
       const elem = document.getElementById(id);
       const options = {
-        initpath: [['.', '/']],
-        onfocus: function (e) {
-          console.log('focus');
-          console.log(e);
-        },
-        onblur: function (e) {
-          console.log('blur');
-          console.log(e);
-        },
+        initpath: [['./', '', { canmodify: false } ]],
         onrefresh: function (folder, required) {
           const PathArr = folder.GetPath().at(-1);
-          console.log(PathArr);
-          var dirPath = '';
-          for(var i = 0; i < PathArr.length - 1; i++){
-            dirPath = dirPath + PathArr[i];
-          }
+          var dirPath = PathArr[0]
           console.log(dirPath);
           getDirInfo(dirPath, (contents) => {
-            console.log('Directory Elements:' , contents);
-            console.log('Directory Path:',folder.GetPath());
             folder.SetEntries(contents);
-          });
-         
+          });    
         },
       };
       const fe = new window.FileExplorer(elem, options);
+      fe.removeEventListener();
       const folder = fe.GetCurrentFolder();
     };
 
@@ -69,3 +55,4 @@ function FileMangement() {
 }
 
 export default FileMangement;
+

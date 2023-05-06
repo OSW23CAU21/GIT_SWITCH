@@ -42,7 +42,7 @@ const readDirectoryInfo = (dirPath, callback) => {
         const fileInfo = {
           name: file,
           type: stats.isFile() ? 'file' : stats.isDirectory() ? 'folder' : '',
-          id: dirPath + '/',
+          id: stats.isFile() ? dirPath + file : stats.isDirectory() ? dirPath + file +'/' : '',
           hash: '/'
         };
 
