@@ -1,17 +1,18 @@
-import React, { useState ,useEffect, useRef } from 'react';
+import React, {useEffect} from 'react';
 import './file-explorer/file-explorer.css';
 const { ipcRenderer } = window.require('electron');
 
+const getDirInfo = async (dirPath, callback) => {
+  try {
+    const result = await ipcRenderer.invoke('ReadDir', dirPath);
+    callback(result);
+  } catch (err) {
+    console.error('Error reading directory info:', err);
+  }
+};
+
 function FileMangement() {
   const id = 'filemanager'; // getting id when components change to Filemangement(id) to feature support "switching"
-  const getDirInfo = async (dirPath, callback) => {
-    try {
-      const result = await ipcRenderer.invoke('ReadDir', dirPath);
-      callback(result);
-    } catch (err) {
-      console.error('Error reading directory info:', err);
-    }
-  };
 
   useEffect(() => {
     const script = document.createElement('script');
@@ -26,7 +27,6 @@ function FileMangement() {
         onrefresh: function (folder, required) {
           const PathArr = folder.GetPath().at(-1);
           var dirPath = PathArr[0]
-          console.log(dirPath);
           getDirInfo(dirPath, (contents) => {
             folder.SetEntries(contents);
           });    
