@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import './file-explorer/file-explorer.css';
 const { ipcRenderer } = window.require('electron');
 

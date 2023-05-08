@@ -1,9 +1,18 @@
-// back-end
+// back-end 
+//[1] bsPath :  /Users/mj/Desktop/OSW23/localrepo/Frontend
 const { app, BrowserWindow, ipcMain, webContents } = require('electron') 
+const git = require('isomorphic-git');
 const fs = require('fs')
 const path = require('path')
 
 var RelPath = './';
+
+git.init({
+  fs,
+  dir: '/Users/mj/Desktop/OSW23/flmngr/',
+})
+  .then(() => console.log('Repository initated!'))
+  .catch((err) => console.error('Error to init repository:', err));
 
 let win = null;
 function createWindow () { 
@@ -86,7 +95,6 @@ ipcMain.handle('ReadDir', async (event, DirPath) => { // DirPath are string for 
 });
 
 // for unStaged/Staged
-
 const getDirInfo = (dirPath, callback) => {
   fs.readdir(dirPath, (err, files) => {
     if (err) {
@@ -122,6 +130,7 @@ const getDirInfo = (dirPath, callback) => {
     });
   });
 };
+
 
 ipcMain.handle('getDir', async (event) => { // DirPath are string for exapmle "./osw23/team21/"
   DirPath = RelPath;
