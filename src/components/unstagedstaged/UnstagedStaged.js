@@ -3,6 +3,7 @@ import FileList from './FileList';
 import styled from 'styled-components';
 const { ipcRenderer } = window.require('electron');
 
+
 /**
  * For untracked files:
  *  Adding the new files into a staging area (untracked -> staged; git add)
@@ -18,7 +19,7 @@ const { ipcRenderer } = window.require('electron');
  */
 const getDirInfo = async (callback) => { //getting FileInfo from backend "main.js" using electron.
   try {
-    const result = await ipcRenderer.invoke('getDir');
+    const result = await ipcRenderer.invoke('getGitStat');
     callback(result);
   } catch (err) {
     console.error('Error reading directory info:', err);
