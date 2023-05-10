@@ -97,9 +97,11 @@ const getGitStat = async (dirPath, callback) => {
         new Promise(async (resolve) => {
           const filePath = path.join(AbsPath, dirPath, file);
           const fileName = filePath.replace(AbsPath, '');
+          console.log('dirPath : ', dirPath);
+          console.log('fileName : ', fileName);
 
           fs.stat(filePath, async (err, stats) => {
-            if (file.startsWith('.') || stats.isDirectory()) {
+            if (fileName.startsWith('.') || stats.isDirectory()) {
               resolve(null);
             } else {
               const fileStat = await git.status({
