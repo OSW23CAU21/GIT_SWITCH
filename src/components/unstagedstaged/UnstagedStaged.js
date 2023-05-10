@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import FileList from './FileList';
 import styled from 'styled-components';
 const { ipcRenderer } = window.require('electron');
-
-
 /**
  * For untracked files:
  *  Adding the new files into a staging area (untracked -> staged; git add)
@@ -17,7 +15,8 @@ const { ipcRenderer } = window.require('electron');
  *  Deleting files (committed -> staged; git rm)
  *  Renaming files (committed -> staged; git mv)
  */
-const getDirInfo = async (callback) => { //getting FileInfo from backend "main.js" using electron.
+
+const getDirInfo = async callback => { //getting FileInfo from backend "main.js" using electron.
   try {
     const result = await ipcRenderer.invoke('getGitStat');
     callback(result);
@@ -42,7 +41,7 @@ const UnstagedStaged = () => {
   }, []);
   
   useEffect (() => {
-    getDirInfo((contents) => { //contents will be {[name : "filename", staged : "true or false"], [], ....} 
+    getDirInfo((contents) => {
       setFiles(contents);
     }); 
   }, [relPath]);

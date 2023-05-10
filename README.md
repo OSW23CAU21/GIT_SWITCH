@@ -35,10 +35,14 @@
 
 ### About gitStatus between Staged/Unstaged.(05/09)
 1. 현재 디렉토리에서, 변경된파일, Staged, unstaged 된 파일을 구별하여 인자값으로 US/S components에 전달합니다. 
-2. 전달양식은 다음과 같습니다 f_DirStat[{name : "파일이름", staged : 참 또는 거짓, status : "modified or untracked"}, {다른 파일 정보}]
+2. 전달양식은 다음과 같습니다 f_DirStat[{name : "파일이름", staged : 참 또는 거짓, status : "modified or untracked", gitName : "깃 파일 이름"}, {다른 파일 정보}]
 3. 참고로 f_DirStat의 f는 filtered를 의미합니다. .폴더(숨김처리된), unmodified는 필터링을 거치기 때문에 정보가 올라가지 않습니다. 
-4. 전달되는 양식 값을 main.js의 getGitStat() 하단 "console.log(f_DirStat);"에서 확인 할 수 있게 하였습니다.(로그는 터미널에서 확인 가능.)
-5. 테스트이전에 꼭 main.js상단의 var AbsPath를 자신의 폴더 값으로 변경해주세요.
+4. 테스트이전에 꼭 main.js상단의 var AbsPath를 자신의 폴더 값으로 변경해주세요.
+
+### About gitModify between staged/Unstaged. (05/10)
+1. "선택한 파일 이동하기"를 누르면 staged, unstaged 상태에 따라 git 명령어가 실행됩니다. 
+2. unstaged 에서 파일을 선택한 후 이동하기를 누르면 해당 파일에 대해 "git add" 실행
+3. staged 에서 파일을 선택한 후 이동하기를 누르면 해당 파일에 대해 "git restore --staged"를 실행.
 
 
 ### Remaining issue (05/09)

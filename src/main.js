@@ -1,6 +1,5 @@
 // back-end 
-//Todo until 5/09
-//1. build code : getDir using gitStat
+//Todo until 5/10
 //2. build code : handling git add, git restore --staged
 //[1] bsPath :  /Users/mj/Desktop/OSW23/localrepo/Frontend
 const { app, BrowserWindow, ipcMain } = require('electron')  //importing electrons
@@ -8,39 +7,8 @@ const git = require('isomorphic-git'); // importing Isomorpihic git.
 const fs = require('fs') 
 const path = require('path')
 
-var AbsPath = '/Users/mj/Desktop/OSW23/localrepo/Frontend/';
+var AbsPath = '/Users/mj/Desktop/OSW23/localrepo/Frontend/'; //테스트시  테스트 폴더의 절대경로를 넣어주세요.
 var RelPath = './';
-
-/*git.init({ // example of intiate git repo.
-  fs,
-  dir: '/Users/mj/Desktop/OSW23/flmngr/', // Please enter your path
-})
-  .then(() => console.log('Repo init!'))
-  .catch((err) => console.error('Error to init:', err));*/
-
-  const GitStat = async (relPath, fileName) => {
-    try {
-      const status = await git.status({ fs, dir: '/Users/mj/Desktop/OSW23/localrepo/Frontend/', filepath: 'src/main.js'});
-      console.log('stats : ', status);
-      console.log(relPath);
-    } catch (error) {
-      console.error('Error while checking git status:', error);
-    }
-  };
-
-  const GitStage = async(relPath) => {
-    try {
-      let files = await git.listFiles({ fs, dir: relPath, ref: 'HEAD' })
-      console.log('staged : ', files);
-    } catch (error){
-      console.error('Error while checking gitStage:', error);
-    }
-  }
-
-  //GitStage('./');
-  GitStat('./', 'README.md');
-  const filePath4 = path.join(AbsPath, './src', 'main.js');
-  console.log(filePath4);
 
 let win = null;
 function createWindow () { 
@@ -61,16 +29,24 @@ app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit() 
 })
 
-function sendRelChanged(dirPath) {
-  RelPath = dirPath;
+//syncronize function between Menubar and Flmngr
+function sendAbsChanged(absPath){
+  AbsPath = absPath;
+  win.webContents.send('AbsPathChanged', AbsPath);
+}
+
+//for syncronize function between Flmngr and US/S
+function sendRelChanged(relPath) {
+  RelPath = relPath;
   win.webContents.send('RelPathChanged', RelPath);
 }
-//for Menubar
 
 //for Menubar
 
+//for Menubar
 
-//for Filemanagement
+
+//for Flmngr :  
 const readDirInfo = (dirPath, callback) => {
   fs.readdir(dirPath, (err, files) => {
     if (err) {
@@ -108,68 +84,8 @@ const readDirInfo = (dirPath, callback) => {
   });
 };
 
-//for Filemanagement
-ipcMain.handle('ReadDir', async (event, DirPath) => { // DirPath are string for exapmle "./osw23/team21/"
-  sendRelChanged(DirPath);
-  return new Promise((resolve, reject) => {
-    readDirInfo(DirPath, (err, fileList) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(fileList);
-      }
-    });
-  });
-});
-
-// for unStaged/Staged
-/*
-const getGitStat = async(dirPath, callback) => {
-  try{
-  fs.readdir(dirPath, async(err, files) => {
-    if (err) {
-      console.error('Error getting GitStat:', err);
-      callback(err, null);
-      return;
-    }
-    const DirStat = [];
-    for(const file of files){
-      const filePath = path.join(dirPath, file);
-      fs.stat(filePath, async (err, stats) => {
-        if(file.startsWith('.')){
-        }else if(stats.isDirectory()){
-        }else{
-        const fileStat = await git.status({fs, dir : dirPath, filepath : file});
-        console.log("Pushed : ", file);
-        console.log("fileStat : ", fileStat);
-        const staged = fileStat.startsWith('*');
-        let fileStatus;
-  
-        if (fileStat.includes('added')) {
-          fileStatus = 'untracked';
-        } else if (fileStat.includes('modified')) {
-          fileStatus = 'modified';
-        } else {
-          fileStatus = 'unknown';
-        }
-        DirStat.push({
-          Name: file,
-          Staged: staged,
-          Status: fileStatus
-        });
-        }
-      });
-      console.log("DirStat", DirStat);
-    }
-    callback(null, DirStat);
-  });
-  } catch {
-    console.error('Error in getGitStat :', error);
-    callback(error, null);
-  }
-}; */
-
-const getGitStat = async (dirPath, callback) => { //checking GitStatus from Current Directory
+//for US/S :
+const getGitStat = async (dirPath, callback) => {
   try {
     fs.readdir(dirPath, async (err, files) => {
       if (err) {
@@ -205,6 +121,7 @@ const getGitStat = async (dirPath, callback) => { //checking GitStatus from Curr
                 name: file,
                 staged: staged,
                 status: fileStatus,
+                gitName : fileName
               });
             }
           });
@@ -213,18 +130,43 @@ const getGitStat = async (dirPath, callback) => { //checking GitStatus from Curr
 
       const dirStat = await Promise.all(fileStatsPromises);
       const f_DirStat = dirStat.filter((item) => item !== null);
-      console.log(f_DirStat);
       callback(null, f_DirStat);
     });
-  } catch (error) {
-    console.error('Error in getGitStat:', error);
-    callback(error, null);
+  } catch (err) {
+    console.error('Error in getGitStat:', err);
+    callback(err, null);
   }
 };
 
+//for US/S :
+const gitModify = async(SelectedFiles, length, callback) => {
+  for(let i = 0; i < length; i++){
+    if(SelectedFiles[i].staged == true){
+      const gitMod = await git.add({ fs, dir: AbsPath, filepath: SelectedFiles[i].gitName});
+      callback(gitMod);
+    }else{
+      const gitMod = await git.resetIndex({fs, dir: AbsPath, filepath: SelectedFiles[i].gitName});
+      callback(gitMod)
+    }
+  }
+};
 
+//for Flmngr :
+ipcMain.handle('ReadDir', async (event, DirPath) => {
+  sendRelChanged(DirPath);
+  return new Promise((resolve, reject) => {
+    readDirInfo(DirPath, (err, fileList) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(fileList);
+      }
+    });
+  });
+});
 
-ipcMain.handle('getGitStat', async (event) => { // DirPath are string for exapmle "./osw23/team21/"
+//for Flmngr:
+ipcMain.handle('getGitStat', async (event) => {
   return new Promise((resolve, reject) => {
     getGitStat(RelPath, (err, fileList) => {
       if (err) {
@@ -236,14 +178,23 @@ ipcMain.handle('getGitStat', async (event) => { // DirPath are string for exapml
   });
 });
 
-/*ipcMain.handle('gitAdd', async (event) => { //use override to config git add "filename" and git add .
+//for US/S :
+ipcMain.handle('gitModify', async (event, SelectedFiles, length) => { 
+  return new Promise((resolve, reject) => {
+    gitModify(SelectedFiles, length, (err, gitMod) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(gitMod);
+      }
+    });
+  });
+});
+
+//for US/S :
+ipcMain.handle('gitRestore', async (event, fileName) => {
   return new Promise((resolve, reject) => {
   });
 });
 
-ipcMain.handle('gitRestore', async (event) => { // override needed?
-  return new Promise((resolve, reject) => {
-  });
-});
-*/
 
