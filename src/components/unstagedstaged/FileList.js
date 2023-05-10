@@ -1,4 +1,14 @@
 import React, { useState } from 'react';
+const { ipcRenderer } = window.require('electron');
+const sendSelectedFiles = async (selectedFiles, length) => { //getting FileInfo from backend "main.js" using electron.
+  console.log(selectedFiles);
+  try {
+    const result = await ipcRenderer.invoke('gitModify', selectedFiles, length);
+  } catch {
+    console.error('Error : gitModify');
+  }
+};
+
 const FileList = ({ files, onFileSelect }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
 
@@ -12,6 +22,8 @@ const FileList = ({ files, onFileSelect }) => {
 
   const handleButtonClick = () => {
     onFileSelect(selectedFiles);
+    console.log('selectedFiles', selectedFiles);
+    sendSelectedFiles(selectedFiles, selectedFiles.length);
     setSelectedFiles([]);
   };
 
