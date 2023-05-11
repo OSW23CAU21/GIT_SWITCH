@@ -16,9 +16,9 @@ const { ipcRenderer } = window.require('electron');
  *  Renaming files (committed -> staged; git mv)
  */
 
-const getDirInfo = async callback => { //getting FileInfo from backend "main.js" using electron.
+const getDirInfo = async (CurrentPath, callback) => { //getting FileInfo from backend "main.js" using electron.
   try {
-    const result = await ipcRenderer.invoke('getGitStat');
+    const result = await ipcRenderer.invoke('getGitStat', CurrentPath);
     callback(result);
   } catch (err) {
     console.error('Error reading directory info:', err);
@@ -29,22 +29,23 @@ const initialFiles = [];
 
 const UnstagedStaged = () => {
   const [files, setFiles] = useState(initialFiles);
-  const [relPath, setRelPath] = useState('');
+  const [CurrentPath, setCurrentPath] = useState('');
   useEffect(() => {
-    ipcRenderer.on('RelPathChanged', (_, newRelPath) => {
-      console.log('newRelPath')
-      setRelPath(newRelPath);
+    ipcRenderer.on('CurrentPathChanged', (_, newCurrentPath) => {
+      //console.log('newCurrentPath :', newCurrentPath);
+      setCurrentPath(newCurrentPath);
     });
     return () => {
-      ipcRenderer.removeAllListeners('relPathChanged');
+      ipcRenderer.removeAllListeners('CurrentPathChanged');
     };
   }, []);
   
   useEffect (() => {
-    getDirInfo((contents) => {
+    //console.log('getDirInfo :', CurrentPath);
+   getDirInfo(CurrentPath, (contents) => {
       setFiles(contents);
     }); 
-  }, [relPath]);
+  }, [CurrentPath]);
    
   const handleFileSelect = (selectedFiles, staged) => {
     const updatedFiles = files.map(file =>
