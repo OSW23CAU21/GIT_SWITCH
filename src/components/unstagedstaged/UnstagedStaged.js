@@ -2,19 +2,6 @@ import React, { useState, useEffect } from 'react';
 import FileList from './FileList';
 import styled from 'styled-components';
 const { ipcRenderer } = window.require('electron');
-/**
- * For untracked files:
- *  Adding the new files into a staging area (untracked -> staged; git add)
- *  For modified files
- *  Adding the modified files into a staging area (modified -> staged; git add)
- *  Undoing the modification (modified -> unmodified; git restore)
- *  For staged files
- * Unstaging changes (staged -> modified or untracked; git restore --staged)
- *  For committed or unmodified files
- *  Untracking files (committed -> untracked; git rm --cached)
- *  Deleting files (committed -> staged; git rm)
- *  Renaming files (committed -> staged; git mv)
- */
 
 const getDirInfo = async (CurrentPath, callback) => { //getting FileInfo from backend "main.js" using electron.
   try {
@@ -53,6 +40,7 @@ const UnstagedStaged = () => {
     );
     setFiles(updatedFiles);
   };
+
   const Container = styled.div`
     display: flex;
   `;
@@ -92,6 +80,17 @@ text-align:right;
   `;
   return (
     <Container>
+      <Staged>
+        <div className="staged-content">
+          <h3>staged</h3>
+          <FileList
+            files={files.filter(file => !file.staged)}
+            onFileSelect={selectedFiles =>
+                handleFileSelect(selectedFiles, true)
+            }
+          />
+        </div>
+      </Staged>
       <Unstaged>
         <div className="unstaged-content">
           <h3>Unstaged</h3>
@@ -103,17 +102,6 @@ text-align:right;
           />
         </div>
       </Unstaged>
-      <Staged>
-        <div className="staged-content">
-          <h3>staged</h3>
-          <FileList
-            files={files.filter(file => !file.staged)}
-            onFileSelect={selectedFiles =>
-              handleFileSelect(selectedFiles, true)
-            }
-          />
-        </div>
-      </Staged>
     </Container>
   );
 };
