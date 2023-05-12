@@ -7,6 +7,7 @@ const setDirButtonClick = async () => {
 }
 
 const gitInitButtonClick = async () => {
+  const gitInit = await ipcRenderer.invoke('gitInit'); 
   console.log('gitInit');
 }
 
