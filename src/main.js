@@ -92,7 +92,7 @@ const manageFile = async ({ action, newName, fileInfo }) => {
       await git.remove({fs, dir: RootPath, filepath: gitName});
       break;
     case 'Restore':
-      await git.checkout({fs, dir: RootPath, force: true, filepath: gitName});
+      await git.checkout({fs, dir: RootPath, force: true, filepaths: [gitName]});
       break;
     default:
       console.error(`Unsupported action: ${action}`);
