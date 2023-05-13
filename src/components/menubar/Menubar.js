@@ -1,20 +1,38 @@
-import React from 'react';
-const { ipcRenderer } = window.require('electron');
+import React, { useState } from 'react';
+import { ipcRenderer } from 'electron';
 
-const setDirButtonClick = async () => {
-  const rootPath = await ipcRenderer.invoke('getRoot');
-  console.log(rootPath);
-};
-
-const gitInitButtonClick = async () => {
-  console.log('gitInit');
-};
-
-const commitButtonClick = async () => {
-  console.log('commit');
-};
+const { exec } = require('child_process');
 
 const Menubar = () => {
+  //const [commitMessage, setCommitMessage] = useState('');
+
+  const setDirButtonClick = async () => {
+    const rootPath = await ipcRenderer.invoke('getRoot');
+    console.log(rootPath);
+  };
+
+  const gitInitButtonClick = async () => {
+    console.log('gitInit');
+  };
+
+  const commitButtonClick = async () => {
+    const modifiedFiles = await ipcRenderer.invoke('getModifiedFiles');
+    const commitMsg = window.prompt('Enter commit message:', '');
+    if (commitMsg !== null) {
+      const commitCmd = `git commit -m "${commitMsg}" ${modifiedFiles.join(
+        ' '
+      )}`;
+      exec(commitCmd, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`exec error: ${error}`);
+          return;
+        }
+        console.log(`stdout: ${stdout}`);
+        console.log(`stderr: ${stderr}`);
+      });
+    }
+  };
+
   return (
     <div>
       <button onClick={setDirButtonClick}>setDir</button>
