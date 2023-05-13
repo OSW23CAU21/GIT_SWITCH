@@ -2,6 +2,8 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron');  //importin
 const git = require('isomorphic-git'); // importing Isomorpihic git.
 const fs = require('fs');
 const path = require('path');
+const {resolveConfig} = require("prettier");
+const {stat} = require("fs");
 
 var RootPath = '';
 
@@ -176,64 +178,48 @@ const readDirInfo = (currentPath, callback) => {
 
 //for US/S :
 const getGitStat = async (currentPath, callback) => {
-  let dirPath;
-  if(currentPath===''&&RootPath===''){
-    dirPath = './'; // 초기화면 선택 된 폴더 없음.
-    return;
-  }else if(currentPath===''){
-    dirPath = RootPath; // 선택 된 폴더가 있으나, Root 상태
-  }else{
-    dirPath = currentPath; // Root 내부의 폴더를 브라우징 중.
-  }
-  //console.log('gitStat/dirPath :', dirPath);
-    fs.readdir(dirPath, async (err, files) => {
-      const fileStatsPromises = files.map((file) =>
-        new Promise(async (resolve) => {
-          const targetPath = path.resolve(RootPath, dirPath, file); // git 상태를 조회하려는 파일의 절대경로.
-          const subDir = path.join(RootPath, '/'); // git 이름을 계산하기 위한 경로.
-          const fileName = targetPath.replace(subDir, ''); //git 기준 파일명.
-          //console.log('[filePath :', targetPath, ']\n[subDir : ', subDir, ']\n[fileName : ', fileName, ']\n');
-          fs.stat(targetPath, async (err, stats) => {
-            if (fileName.startsWith('.') || stats.isDirectory()) {
-              //console.log('filtered : ', targetPath);
-              resolve(null);
-            } else {
-              try{
-              //console.log('gitStat.... /DirPath:', targetPath);
-              const fileStat = await git.status({
-                fs,
-                dir: subDir,
-                filepath: fileName,
-              });
-              //console.log('fileName : ', fileName, '\n fileStat : ', fileStat);
-              const staged = fileStat.startsWith('*');
-              let fileStatus;
-              if (fileStat.includes('added')) {
-                fileStatus = 'untracked';
-              } else if ( fileStat==='modified' || fileStat ==='*modified') {
-                fileStatus = 'modified';
-              } else {
-                resolve(null);
-              }
-              resolve({
-                name: fileName,
-                staged: staged,
-                status: fileStatus
-              });
-              }catch{
-                console.error(err);
-                //console.log('error occured :', targetPath);
-              }
-            }
-          });
-        })
-      );
+  const files = await git.listFiles({fs, dir: RootPath});
 
-      const dirStat = await Promise.all(fileStatsPromises);
-      const f_DirStat = dirStat.filter((item) => item !== null);
-      //console.log(f_DirStat);
-      callback(null, f_DirStat);
-    });
+  // 각 파일의 Git 상태를 가져옵니다.
+  const statusMatrix = await git.statusMatrix({fs, dir: RootPath, filepaths: files});
+
+  const fileStatsPromises = statusMatrix.map(async ([filepath, headStatus, workdirStatus, stageStatus]) => {
+    console.log(`current path: ${currentPath}`);
+    console.log(`File: ${filepath}`);
+    console.log(`Head status: ${headStatus}`);
+    console.log(`Workdir status: ${workdirStatus}`);
+    console.log(`Stage status: ${stageStatus}`);
+    if (stageStatus !== 0) {
+      return new Promise(async (resolve) => {
+        const fileStat = await git.status({
+          fs,
+          dir: RootPath,
+          filepath: filepath,
+        });
+        const staged = fileStat.startsWith('*');
+
+        let fileStatus;
+        if (fileStat.includes('added')) {
+          fileStatus = 'untracked';
+        } else if ( fileStat === 'modified' || fileStat ==='*modified') {
+          fileStatus = 'modified';
+        } else {
+          resolve(null);
+        }
+        resolve({
+          name: filepath,
+          staged: staged,
+          status: fileStatus
+        });
+      })
+    }
+    console.log('---');
+  })
+
+  const dirStat = await Promise.all(fileStatsPromises);
+  const f_DirStat = dirStat.filter((item) => item !== null);
+
+  callback(null, f_DirStat);
 };
 
 //for US/S :
