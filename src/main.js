@@ -1,55 +1,143 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');  //importing electrons
 const git = require('isomorphic-git'); // importing Isomorpihic git.
-const fs = require('fs'); 
+const fs = require('fs');
 const path = require('path');
-const {resolveConfig} = require("prettier");
-const {stat} = require("fs");
 
-var RootPath = ''; 
+var RootPath = '';
 
 let win = null;
-function createWindow () { 
-  win = new BrowserWindow({ 
-    width: 800, 
-    height: 1000, 
-    webPreferences: { 
+function createWindow() {
+  win = new BrowserWindow({
+    width: 800,
+    height: 1000,
+    webPreferences: {
       nodeIntegration: true,
-      contextIsolation : false
-    } 
-  }) 
+      contextIsolation: false
+    }
+  })
   win.loadURL("http://localhost:3000");
-} 
-app.whenReady().then(() => { 
-  createWindow() 
-}) 
-app.on('window-all-closed', function () { 
-  if (process.platform !== 'darwin') app.quit() 
-})
+};
+app.whenReady().then(() => {
+  createWindow()
+});
+app.on('window-all-closed', function () {
+  if (process.platform !== 'darwin') app.quit()
+});
 
 //syncronize function between Menubar and Flmngr
-function sendRootChanged(rootPath){
+function sendRootChanged(rootPath) {
   RootPath = rootPath;
-  console.log('Root changed :', path.basename(RootPath));
+  console.log('Root changed :', RootPath);
   win.webContents.send('RootNameChanged', path.basename(RootPath));
-}
+};
 
 //for syncronize function between Flmngr and US/S
 function sendCurrentChanged(currentPath) {
   console.log('current changed : ', currentPath);
   win.webContents.send('CurrentPathChanged', currentPath);
-}
+};
+
+//for gitManaging
+async function del(file){
+  fs.unlink(file, function(err){
+    if(err) {
+      console.log("Error : ", err)
+    }
+  })
+};
+
+//for gitManaging
+async function rename(original, target){
+  fs.rename(original, target, function (err) {
+    if (err) throw err;
+    console.log('File Renamed!');
+  }); 
+};
+
+//for gitManaging
+function sendFileOpen(fileStatus) {
+  console.log('File open request :', fileStatus);
+  win.webContents.send('openingFiles', fileStatus);
+};
 
 //for Menubar
+const gitInit = async (callback) => {
+  try {
+    const Init = await git.init({ fs, dir: RootPath });
+  } catch (err) {
+    console.error('initial error:', err);
+  }
+};
 
-//for Menubar
+//for gitManaging
+const manageFile = async ({ action, newName, fileInfo }) => {
+  const filePath = fileInfo.Path;
+  const subDir = path.join(RootPath, '/');
+  const gitName = filePath.replace(subDir, '');
+  switch (action) {
+    case 'Rename':
+      if(newName === 'undefined'){
+        break;
+      }
+      const targetName = gitName.replace(fileInfo.Name, newName);
+      await git.remove({fs, dir: RootPath, filepath: gitName});
+      rename(path.join(subDir, gitName), path.join(subDir, targetName));
+      await git.add({fs, dir: RootPath, filepath: targetName});
+      break;
+    case 'Delete':
+      await git.remove({fs, dir: RootPath, filepath: gitName});
+      del(filePath);
+      break;
+    case 'Untrack':
+      await git.remove({fs, dir: RootPath, filepath: gitName});
+      break;
+    case 'Restore':
+      await git.checkout({fs, dir: RootPath, force: true, filepaths: [gitName]});
+      break;
+    default:
+      console.error(`Unsupported action: ${action}`);
+      break;
+  }
+};
 
+//for GitManaging:
+const readGitFile = async (fileEntry) => {
+  const targetPath = fileEntry.id;
+  const subDir = path.join(RootPath, '/');
+  const gitName = targetPath.replace(subDir, '');
+  const fileName = fileEntry.name;
+
+  let gitFileStat;
+  try {
+    gitFileStat = await git.status({ fs, dir: subDir, filepath: gitName });
+  } catch {
+    console.log('error getting gitstat : file');
+  }
+
+  let flag;
+  if (gitFileStat === '*modified' || gitFileStat === 'modified') {
+    flag = true;
+  } else if (gitFileStat === '*unmodified' || gitFileStat === 'unmodified') {
+    flag = true;
+  } else {
+    flag = false;
+  }
+
+  const fileInfo = {
+    Name: fileName,
+    Path: targetPath,
+    Status: gitFileStat,
+    Open: flag
+  }
+  return fileInfo;
+};
 
 //for Flmngr :  
 const readDirInfo = (currentPath, callback) => {
   //console.log('readDirInfo/start/dirPath :', dirPath);
-  if(currentPath === '' && RootPath === ''){
+  if (currentPath === '' && RootPath === '') {
     callback(null, []);
-  }else if(currentPath === ''){
+  } else if (currentPath === '') {
     currentPath = RootPath;
   }
   fs.readdir(currentPath, (err, files) => {
@@ -133,31 +221,31 @@ const getGitStat = async (currentPath, callback) => {
 };
 
 //for US/S :
-const gitModify = async(SelectedFiles, length, callback) => {
-  for(let i = 0; i < length; i++){
-    if(SelectedFiles[i].staged == true){
-      const gitMod = await git.add({ fs, dir: RootPath, filepath: SelectedFiles[i].name});
+const gitModify = async (SelectedFiles, length, callback) => {
+  for (let i = 0; i < length; i++) {
+    if (SelectedFiles[i].staged == true) {
+      const gitMod = await git.add({ fs, dir: RootPath, filepath: SelectedFiles[i].name });
       callback(gitMod);
-    }else{
-      const gitMod = await git.resetIndex({fs, dir: RootPath, filepath: SelectedFiles[i].name});
+    } else {
+      const gitMod = await git.resetIndex({ fs, dir: RootPath, filepath: SelectedFiles[i].name });
       callback(gitMod)
     }
   }
 };
 
 //for menubar : clicking gitInit
-ipcMain.handle('gitInit', async (event) =>{
-
+ipcMain.handle('gitInit', async (event) => {
+  gitInit();
 });
 
 //for menubar : clicking setDir
 ipcMain.handle('getRoot', async (event) => {
   const result = await dialog.showOpenDialog({ properties: ['openDirectory'] })
   const resultPath = result.filePaths[0];
-  if(resultPath != null){
+  if (resultPath != null) {
     sendRootChanged(resultPath);
     return resultPath
-  }else{
+  } else {
     return resultPath;
   }
 });
@@ -177,6 +265,19 @@ ipcMain.handle('ReadDir', async (event, currentPath) => {
   });
 });
 
+//for gitManaging
+ipcMain.handle('OpenFile', async (event, fileEntry) => {
+  const fileInfo = await readGitFile(fileEntry);
+  sendFileOpen(fileInfo);
+});
+
+//for gitManaging
+ipcMain.handle('executeAction', (event, data) => {
+  console.log(data);
+  manageFile(data);
+  sendRootChanged(RootPath);
+});
+
 //for US/S: getFile's Data
 ipcMain.handle('getGitStat', async (event, currentPath) => {
   return new Promise((resolve, reject) => {
@@ -191,7 +292,7 @@ ipcMain.handle('getGitStat', async (event, currentPath) => {
 });
 
 //for US/S: clicking "선택한 파일 이동"
-ipcMain.handle('gitModify', async (event, SelectedFiles, length) => { 
+ipcMain.handle('gitModify', async (event, SelectedFiles, length) => {
   return new Promise((resolve, reject) => {
     gitModify(SelectedFiles, length, (err, gitMod) => {
       if (err) {
@@ -202,5 +303,6 @@ ipcMain.handle('gitModify', async (event, SelectedFiles, length) => {
     });
   });
 });
+
 
 
