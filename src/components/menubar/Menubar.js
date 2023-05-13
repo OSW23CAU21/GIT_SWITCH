@@ -3,10 +3,6 @@ import { ipcRenderer } from 'electron';
 
 const { exec } = require('child_process');
 
-const gitInitButtonClick = async () => {
-  const gitInit = await ipcRenderer.invoke('gitInit'); 
-  console.log('gitInit');
-}
 const Menubar = () => {
   //const [commitMessage, setCommitMessage] = useState('');
 
