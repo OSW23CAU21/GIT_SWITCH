@@ -12,7 +12,15 @@ const Menubar = () => {
   };
 
   const gitInitButtonClick = async () => {
-    console.log('gitInit');
+    const rootPath = await ipcRenderer.invoke('getRoot');
+    exec('git init', { cwd: rootPath }, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`exec error: ${error}`);
+        return;
+      }
+      console.log(`stdout: ${stdout}`);
+      console.error(`stderr: ${stderr}`);
+    });
   };
 
   const commitButtonClick = async () => {
