@@ -258,8 +258,12 @@ const gitModify = async (SelectedFiles, length, callback) => {
 
 //for menubar : clicking gitInit
 ipcMain.handle('gitInit', async (event) => {
-  gitInit();
+  return await gitInit((currentPath) => {
+    console.log(currentPath);
+    return currentPath;
+  });
 });
+
 
 //for menubar : clicking setDir
 ipcMain.handle('getRoot', async (event) => {
