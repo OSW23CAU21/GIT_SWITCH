@@ -3,6 +3,19 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 
 const { ipcRenderer } = window.require('electron');
 
+const FileStatusList = ({status, filePaths}) => {
+  return (
+    <div>
+      <h3>{status.toUpperCase()}</h3>
+      {filePaths.map((filePath, index) => (
+        <ListItem key={index}>
+          {filePath}
+        </ListItem>
+      ))}
+    </div>
+  );
+};
+
 const Menubar = () => {
   const [open, setOpen] = useState(false);
   const [commitDialogOpen, setCommitDialogOpen] = useState(false);
@@ -64,15 +77,9 @@ const Menubar = () => {
         <DialogTitle>{"Commit Changes"}</DialogTitle>
         <DialogContent>
           <List>
-              <ListItem>
-                new : {gitFileInfo.new}
-              </ListItem>
-              <ListItem>
-                deleted : {gitFileInfo.deleted}
-              </ListItem>
-              <ListItem>
-                modified : {gitFileInfo.modified}
-              </ListItem>
+            {Object.entries(gitFileInfo).map(([status, filePaths]) => (
+            <FileStatusList key={status} status={status} filePaths={filePaths} />
+            ))}
           </List>
           <TextField autoFocus margin="dense" label="Commit Message" type="text" fullWidth variant="outlined" value={commitMessage} onChange={(e) => setCommitMessage(e.target.value)} />
           <TextField margin="dense" label="Author Name" type="text" fullWidth variant="outlined" value={authorName} onChange={(e) => setAuthorName(e.target.value)} />
