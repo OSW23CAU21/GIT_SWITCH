@@ -214,6 +214,35 @@ const readDirInfo = (currentPath, callback) => {
   });
 };
 
+const getAllFiles = async (dir, fileList = [], ig) => {
+  const files = await fs.promises.readdir(dir);
+
+  for (const file of files) {
+    // .git 디렉토리를 제외합니다.
+    if (file === '.git') {
+      continue;
+    }
+
+    const filePath = path.join(dir, file);
+    const relativePath = path.relative(RootPath, filePath);
+
+    // .gitignore에 명시된 파일 및 디렉토리를 제외합니다.
+    if (ig.ignores(relativePath)) {
+      continue;
+    }
+
+    const stat = await fs.promises.stat(filePath);
+
+    if (stat.isDirectory()) {
+      fileList = await getAllFiles(filePath, fileList, ig);
+    } else {
+      fileList.push(filePath);
+    }
+  }
+
+  return fileList;
+};
+
 const getGitStat = async (currentPath, callback) => {
   // .gitignore 파일을 처리합니다.
   const gitignorePath = path.join(RootPath, '.gitignore');
