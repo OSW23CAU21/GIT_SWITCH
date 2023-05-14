@@ -60,7 +60,38 @@ const Menubar = () => {
         </DialogActions>
       </Dialog>
 
-      
+      <Dialog open={commitDialogOpen} onClose={() => setCommitDialogOpen(false)}>
+        <DialogTitle>{"Commit Changes"}</DialogTitle>
+        <DialogContent>
+          {gitFileInfo && (
+            <List>
+              {Object.entries(gitFileInfo).map(([key, fileInfo]) => {
+                // Only return a ListItem for staged files
+                if (!fileInfo.staged) {
+                  return (
+                    <ListItem key={key}>
+                      {fileInfo.name}
+                    </ListItem>
+                  );
+                }
+                // In case you want to not render anything for staged files, return null
+                return null;
+              })}
+            </List>
+          )}
+          <TextField autoFocus margin="dense" label="Commit Message" type="text" fullWidth variant="outlined" value={commitMessage} onChange={(e) => setCommitMessage(e.target.value)} />
+          <TextField margin="dense" label="Author Name" type="text" fullWidth variant="outlined" value={authorName} onChange={(e) => setAuthorName(e.target.value)} />
+          <TextField margin="dense" label="Author Email" type="text" fullWidth variant="outlined" value={authorEmail} onChange={(e) => setAuthorEmail(e.target.value)} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setCommitDialogOpen(false)}>
+            Close
+          </Button>
+          <Button onClick={handleCommit}>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <Button onClick={setDirButtonClick}>Set Directory</Button>
       <Button onClick={gitInitButtonClick}>Git Init</Button>
