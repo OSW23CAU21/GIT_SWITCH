@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 var RootPath = '';
+var CurrPath = '';
 
 let win = null;
 function createWindow() {
