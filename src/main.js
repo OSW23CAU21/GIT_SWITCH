@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron');  //importin
 const git = require('isomorphic-git'); // importing Isomorpihic git.
 const fs = require('fs');
 const path = require('path');
+const ignore = require('ignore');
 
 var RootPath = '';
 var CurrPath = '';
@@ -29,6 +30,7 @@ app.on('window-all-closed', function () {
 function sendRootChanged(rootPath) {
   RootPath = rootPath;
   console.log('Root changed :', RootPath);
+  sendCurrentChanged(rootPath);
   win.webContents.send('RootNameChanged', path.basename(RootPath));
 };
 
@@ -62,16 +64,16 @@ function sendFileOpen(fileStatus) {
 };
 
 //for Menubar
-const gitInit = async (currPath) => {
+const gitInit = async callback => {
   try {
-    await git.resolveRef({ fs, dir: currPath, ref: 'HEAD' });
+    await git.resolveRef({ fs, dir: CurrPath, ref: 'HEAD' });
     console.log('This repository is already initialized.');
-    return true;
+    return callback(true);
   } catch (err) {
-    await git.init({ fs, dir: currPath});
+    await git.init({ fs, dir: CurrPath});
     console.log('Repository initialized.');
-    sendRootChanged(currPath);
-    return false;
+    sendRootChanged(CurrPath);
+    return callback(false);
   }
 };
 
@@ -89,31 +91,22 @@ const gitCommit = async(commitMessage, authorName, authorEmail) => {
   return sha;
 };
 
-const commitStatus = async (dir) => {
-  const matrix = await git.statusMatrix({ fs, dir });
+ipcMain.handle('gitCommitTry', async(event) => {
+  return new Promise((resolve, reject) => {
+    getGitStat(RootPath, (err, fileList) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(fileList);
+      }
+    });
+  });
+});
 
-  const status = {
-    new: [],
-    modified: [],
-    deleted: []
-  };
-
-  console.log('mat : ',  matrix);
-  for (const [filepath, HeadStatus, WorkdirStatus, StageStatus] of matrix) {
-    if (HeadStatus === 0 && WorkdirStatus === 2 && StageStatus > 1) {
-      // New file
-      status.new.push(filepath);
-    } else if (HeadStatus === 1 && WorkdirStatus === 0 && StageStatus === 0) {
-      // Deleted file
-      status.deleted.push(filepath);
-    } else if (HeadStatus === 1 && WorkdirStatus === 2 && StageStatus > 1 ) {
-      // Modified file
-      status.modified.push(filepath);
-    }
-  }
-  console.log('status : ', status);
-  return status;
-};
+ipcMain.handle('gitCommitConfirm', async(event, commitMessage, authorName, authorEmail) => {
+  await gitCommit(commitMessage, authorName, authorEmail);
+  sendRootChanged(RootPath);
+});
 
 
 //for gitManaging
@@ -221,45 +214,80 @@ const readDirInfo = (currentPath, callback) => {
   });
 };
 
-//for US/S :
-const getGitStat = async (currentPath, callback) => {
-  const files = await git.listFiles({fs, dir: RootPath});
+const getAllFiles = async (dir, fileList = [], ig) => {
+  const files = await fs.promises.readdir(dir);
 
-  // 각 파일의 Git 상태를 가져옵니다.
-  const statusMatrix = await git.statusMatrix({fs, dir: RootPath, filepaths: files});
-
-  const fileStatsPromises = statusMatrix.map(async ([filepath, headStatus, workdirStatus, stageStatus]) => {
-    console.log(`current path: ${currentPath}`);
-    console.log(`File: ${filepath}`);
-    console.log(`Head status: ${headStatus}`);
-    console.log(`Workdir status: ${workdirStatus}`);
-    console.log(`Stage status: ${stageStatus}`);
-    if (stageStatus !== 0) {
-      return new Promise(async (resolve) => {
-        const fileStat = await git.status({
-          fs,
-          dir: RootPath,
-          filepath: filepath,
-        });
-        const staged = fileStat.startsWith('*');
-
-        let fileStatus;
-        if (fileStat.includes('added')) {
-          fileStatus = 'untracked';
-        } else if ( fileStat === 'modified' || fileStat ==='*modified') {
-          fileStatus = 'modified';
-        } else {
-          resolve(null);
-        }
-        resolve({
-          name: filepath,
-          staged: staged,
-          status: fileStatus
-        });
-      })
+  for (const file of files) {
+    // .git 디렉토리를 제외합니다.
+    if (file === '.git') {
+      continue;
     }
-    console.log('---');
-  })
+
+    const filePath = path.join(dir, file);
+    const relativePath = path.relative(RootPath, filePath);
+
+    // .gitignore에 명시된 파일 및 디렉토리를 제외합니다.
+    if (ig.ignores(relativePath)) {
+      continue;
+    }
+
+    const stat = await fs.promises.stat(filePath);
+
+    if (stat.isDirectory()) {
+      fileList = await getAllFiles(filePath, fileList, ig);
+    } else {
+      fileList.push(filePath);
+    }
+  }
+
+  return fileList;
+};
+
+const getGitStat = async (currentPath, callback) => {
+  // .gitignore 파일을 처리합니다.
+  const gitignorePath = path.join(RootPath, '.gitignore');
+  const gitignoreContent = await fs.promises.readFile(gitignorePath, 'utf8');
+  const ig = ignore().add(gitignoreContent);
+
+  // 저장소의 모든 파일 목록을 가져옵니다 (untracked 포함, .gitignore에 해당하는 파일 제외).
+  const allFiles = await getAllFiles(RootPath, [], ig);
+
+  const fileStatsPromises = allFiles.map(async (filePath) => {
+    const relativePath = path.relative(RootPath, filePath);
+
+    try {
+      const fileStat = await git.status({ fs, dir: RootPath, filepath: relativePath });
+      const staged = fileStat.startsWith('*');
+
+      let fileStatus;
+
+      if (fileStat.includes('added')) {
+        fileStatus = 'untracked';
+      } else if (fileStat === 'modified' || fileStat === '*modified') {
+        fileStatus = 'modified';
+      } else {
+        return null;
+      }
+
+      return {
+        name: relativePath,
+        staged: staged,
+        status: fileStatus,
+      };
+    } catch (err) {
+      if (err.code === 'ReadObjectFail') {
+        // untracked 파일입니다.
+        return {
+          name: relativePath,
+          staged: false,
+          status: 'untracked',
+        };
+      } else {
+        console.error('An error occurred:', err);
+        return null;
+      }
+    }
+  });
 
   const dirStat = await Promise.all(fileStatsPromises);
   const f_DirStat = dirStat.filter((item) => item !== null);
@@ -282,15 +310,10 @@ const gitModify = async (SelectedFiles, length, callback) => {
 
 //for menubar : clicking gitInit
 ipcMain.handle('gitInit', async (event) => {
-  let currPath;
-  if(CurrPath === ''){    // use triple equals for comparison
-    currPath = RootPath;
-  }else{
-    currPath = CurrPath;
-  }
-  console.log('currentPath :', currPath);
-  const gitInitResult = await gitInit(currPath);
-  return gitInitResult;
+  return await gitInit((currentPath) => {
+    console.log(currentPath);
+    return currentPath;
+  });
 });
 
 
@@ -359,16 +382,6 @@ ipcMain.handle('gitModify', async (event, SelectedFiles, length) => {
     });
   });
 });
-
-ipcMain.handle('gitCommitTry', async(event) => {
-  return await commitStatus(RootPath);
-});
-
-ipcMain.handle('gitCommitConfirm', async(event, commitMessage, authorName, authorEmail) => {
-  await gitCommit(commitMessage, authorName, authorEmail);
-  sendRootChanged(RootPath);
-});
-
 
 
 

@@ -3,19 +3,6 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 
 const { ipcRenderer } = window.require('electron');
 
-const FileStatusList = ({status, filePaths}) => {
-  return (
-    <div>
-      <h3>{status.toUpperCase()}</h3>
-      {filePaths.map((filePath, index) => (
-        <ListItem key={index}>
-          {filePath}
-        </ListItem>
-      ))}
-    </div>
-  );
-};
-
 const Menubar = () => {
   const [open, setOpen] = useState(false);
   const [commitDialogOpen, setCommitDialogOpen] = useState(false);
@@ -76,11 +63,22 @@ const Menubar = () => {
       <Dialog open={commitDialogOpen} onClose={() => setCommitDialogOpen(false)}>
         <DialogTitle>{"Commit Changes"}</DialogTitle>
         <DialogContent>
-          <List>
-            {Object.entries(gitFileInfo).map(([status, filePaths]) => (
-            <FileStatusList key={status} status={status} filePaths={filePaths} />
-            ))}
-          </List>
+          {gitFileInfo && (
+            <List>
+              {Object.entries(gitFileInfo).map(([key, fileInfo]) => {
+                // Only return a ListItem for staged files
+                if (!fileInfo.staged) {
+                  return (
+                    <ListItem key={key}>
+                      {fileInfo.name}
+                    </ListItem>
+                  );
+                }
+                // In case you want to not render anything for staged files, return null
+                return null;
+              })}
+            </List>
+          )}
           <TextField autoFocus margin="dense" label="Commit Message" type="text" fullWidth variant="outlined" value={commitMessage} onChange={(e) => setCommitMessage(e.target.value)} />
           <TextField margin="dense" label="Author Name" type="text" fullWidth variant="outlined" value={authorName} onChange={(e) => setAuthorName(e.target.value)} />
           <TextField margin="dense" label="Author Email" type="text" fullWidth variant="outlined" value={authorEmail} onChange={(e) => setAuthorEmail(e.target.value)} />
