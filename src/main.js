@@ -29,6 +29,7 @@ app.on('window-all-closed', function () {
 function sendRootChanged(rootPath) {
   RootPath = rootPath;
   console.log('Root changed :', RootPath);
+  sendCurrentChanged(rootPath);
   win.webContents.send('RootNameChanged', path.basename(RootPath));
 };
 
