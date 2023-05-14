@@ -5,6 +5,8 @@ const {ipcRenderer} = window.require('electron');
 
 const Menubar = () => {
   const [message, setMessage] = useState("");
+  const [commitMessage, setCommitMessage] = useState("");
+
   return (
   <div>
     <button onClick = {setDirButtonClick}>setDir</button>
@@ -30,7 +32,12 @@ const gitInitButtonClick = async () => {
 }
 
 const commitButtonClick = async () => {
-  console.log('commit');
+  const gitInfo = await ipcRenderer.invoke('gitCommitTry');
+  
+  console.log('gitInit : ', gitInfo);
+  setGitFileInfo(gitInfo);
+  setCommitDialogOpen(true);
+
 }
 
 
