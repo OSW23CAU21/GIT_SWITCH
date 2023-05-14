@@ -63,13 +63,19 @@ function sendFileOpen(fileStatus) {
 };
 
 //for Menubar
-const gitInit = async (callback) => {
+const gitInit = async callback => {
   try {
-    const Init = await git.init({ fs, dir: RootPath });
+    await git.resolveRef({ fs, dir: CurrPath, ref: 'HEAD' });
+    console.log('This repository is already initialized.');
+    return callback(true);
   } catch (err) {
-    console.error('initial error:', err);
+    await git.init({ fs, dir: CurrPath});
+    console.log('Repository initialized.');
+    sendRootChanged(CurrPath);
+    return callback(false);
   }
 };
+
 
 //for gitManaging
 const manageFile = async ({ action, newName, fileInfo }) => {
