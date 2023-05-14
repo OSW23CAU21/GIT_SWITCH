@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, List, ListItem } from '@mui/material';
-import { GoGitCommit, GoFoldUp, GoFileDirectory } from 'react-icons/go';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -94,18 +93,10 @@ const Menubar = () => {
         </DialogActions>
       </Dialog>
 
-      <button onClick={setDirButtonClick}>
-        <GoFileDirectory size={20} />
-        Set Directory
-      </button>
-      <button onClick={gitInitButtonClick}>
-        <GoFoldUp size={20} />
-        Git Init
-      </button>
-      <button onClick={commitButtonClick}>
-        <GoGitCommit size={20} />
-        Commit
-      </button>
+      <Button onClick={setDirButtonClick}>SetDir</Button>
+      <Button onClick={gitInitButtonClick}>GitInit</Button>
+      <Button onClick={commitButtonClick}>Commit</Button>
+
 
     </div>
   );
