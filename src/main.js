@@ -90,6 +90,17 @@ const gitCommit = async(commitMessage, authorName, authorEmail) => {
   return sha;
 };
 
+ipcMain.handle('gitCommitTry', async(event) => {
+  return new Promise((resolve, reject) => {
+    getGitStat(RootPath, (err, fileList) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(fileList);
+      }
+    });
+  });
+});
 
 
 //for gitManaging
