@@ -78,7 +78,7 @@ git clone https://github.com/OSW23CAU21/OSW21_GIT_CLIENT.git
 - MacOS Apple M1 Air Ventura 13.1
 
 김재민 
-- MacOS Apple M1 Pro Monterey 12.5.1
+- MacOS Apple M1 Pro Monterey 12.5.1(대여)
 
 조현우
 - MacOS Apple M1 Max Ventura 13.1
