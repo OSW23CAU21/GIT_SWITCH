@@ -102,6 +102,11 @@ ipcMain.handle('gitCommitTry', async(event) => {
   });
 });
 
+ipcMain.handle('gitCommitConfirm', async(event, commitMessage, authorName, authorEmail) => {
+  await gitCommit(commitMessage, authorName, authorEmail);
+  sendRootChanged(RootPath);
+});
+
 
 //for gitManaging
 const manageFile = async ({ action, newName, fileInfo }) => {
