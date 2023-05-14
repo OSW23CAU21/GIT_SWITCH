@@ -25,7 +25,7 @@ git clone https://github.com/OSW23CAU21/OSW21_GIT_CLIENT.git
 ```
 ## Description
 1. Start page
-![Start1](https://github.com/OSW23CAU21/OSW21_GIT_CLIENT/assets/92094639/30de1b09-e73e-45a7-a9ab-cf619d354ac9)
+![Start1](https://github.com/OSW23CAU21/OSW21_GIT_CLIENT/assets/92094639/30de1b09-e73e-45a7-a9ab-cf619d354ac9.)
 ![Start2](https://github.com/OSW23CAU21/OSW21_GIT_CLIENT/assets/92094639/226efa9a-fe21-47ed-bac8-0ef12844938d)
 ![Start3](https://github.com/OSW23CAU21/OSW21_GIT_CLIENT/assets/92094639/9101c7ba-0a93-43e0-8ba7-dd8ff848ca90)
 ![Start4](https://github.com/OSW23CAU21/OSW21_GIT_CLIENT/assets/92094639/ed60cf85-bb69-4a8d-b2f8-c23d65bd450f)
