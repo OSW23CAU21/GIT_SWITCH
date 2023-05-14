@@ -23,6 +23,9 @@ git clone https://github.com/OSW23CAU21/OSW21_GIT_CLIENT.git
 1. npm install
 2. npm start 
 ```
+## Executable Environment
+##### MacOs환경에서 정상적으로 가능
+
 ## Description
 ### 1. Start page  
 <img src="./re_image/start_1.png" width="380" height="400">&nbsp;&nbsp;&nbsp; <img src="./re_image/start_2.png" width="380" height="400">  
