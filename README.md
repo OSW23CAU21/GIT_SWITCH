@@ -24,27 +24,19 @@ git clone https://github.com/OSW23CAU21/OSW21_GIT_CLIENT.git
 2. npm start 
 ```
 ## Description
-1. Start page
-<img src="./re_image/start_1.png">
-<img src="./re_image/start_2.png">
-<img src="./re_image/start_3.png">
-<img src="./re_image/start_4.png">
+### 1. Start page  
+<img src="./re_image/start_1.png" width="400" height="400">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./re_image/start_2.png" width="400" height="400">  
+<img src="./re_image/start_3.png" width="400" height="400">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./re_image/start_4.png" width="400" height="400">  
 
-2. Commit
-<img src="./re_image/commit_1.png">
-<img src="./re_image/commit_2.png">
-<img src="./re_image/commit_3.png">
-<img src="./re_image/commit_4.png">
-<img src="./re_image/commit_5.png">
-<img src="./re_image/commit_6.png">
+### 2. Commit  
+<img src="./re_image/commit_1.png" width="400" height="400"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="./re_image/commit_2.png" width="400" height="400">  
+<img src="./re_image/commit_3.png" width="400" height="400"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="./re_image/commit_4.png" width="400" height="400">  
+<img src="./re_image/commit_5.png" width="400" height="400"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="./re_image/commit_6.png" width="400" height="400">  
 
-3. Gitinit
-<img src="./re_image/Init_1.png">
-<img src="./re_image/Init_2.png">
-<img src="./re_image/Init_3.png">
-<img src="./re_image/Init_4.png">
-<img src="./re_image/Init_5.png">
-<img src="./re_image/Init_6.png">
+### 3. Gitinit  
+<img src="./re_image/Init_1.png" width="400" height="400">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./re_image/Init_2.png" width="400" height="400">  
+<img src="./re_image/Init_3.png" width="400" height="400">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./re_image/Init_4.png" width="400" height="400">  
+<img src="./re_image/Init_5.png" width="400" height="400">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./re_image/Init_6.png" width="400" height="400">  
 
 
 
