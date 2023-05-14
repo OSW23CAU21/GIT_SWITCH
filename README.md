@@ -10,21 +10,20 @@
 | 20165545 | 조현우 |
 
 ## 프로젝트 세팅법
-
-1. react-scripts 다운받고 실행하기 
+ 
 ```
+// git clone
+git clone https://github.com/OSW23CAU21/OSW21_GIT_CLIENT.git
+
 // yarn을 사용 시
-1. yarn add react-scripts
-2. yarn upgrade
-3. yarn start
+1. yarn install
+2. yarn start
 
 // npm 사용 시
-1. npm install -save react-scripts
-2. npm update
-3. npm start 
+1. npm install
+2. npm start 
 ```
 
-2. localhost:3000 접속
 
 ### About gitStatus between Staged/Unstaged.(05/09)
 1. 현재 디렉토리에서, 변경된파일, Staged, unstaged 된 파일을 구별하여 인자값으로 US/S components에 전달합니다. 
