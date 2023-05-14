@@ -76,6 +76,21 @@ const gitInit = async callback => {
   }
 };
 
+const gitCommit = async(commitMessage, authorName, authorEmail) => {
+  let sha = await git.commit({
+    fs,
+    dir: RootPath,
+    author: {
+      name : authorName,
+      email : authorEmail
+    },
+    message : commitMessage
+  });
+  console.log('committed :', sha);
+  return sha;
+};
+
+
 
 //for gitManaging
 const manageFile = async ({ action, newName, fileInfo }) => {
