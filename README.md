@@ -48,7 +48,7 @@ git clone https://github.com/OSW23CAU21/OSW21_GIT_CLIENT.git
 ##### Commit이 진행되면, Unstaged와 Staged 내부의 요소는 Commit된 내용에 맞게 변경됩니다.(오른쪽)
 ---
 <img src="./re_image/commit_7.png" width="500" height="300">  
-##### 마지막으로 Console창 Commit log이다.
+Console창 Commit log  
 ---
 
 ### 3. Gitinit  
