@@ -214,40 +214,21 @@ const readDirInfo = (currentPath, callback) => {
   });
 };
 
-const getAllFiles = async (dir, fileList = [], ig) => {
-  const files = await fs.promises.readdir(dir);
-
-  for (const file of files) {
-    // .git 디렉토리를 제외합니다.
-    if (file === '.git') {
-      continue;
-    }
-
-    const filePath = path.join(dir, file);
-    const relativePath = path.relative(RootPath, filePath);
-
-    // .gitignore에 명시된 파일 및 디렉토리를 제외합니다.
-    if (ig.ignores(relativePath)) {
-      continue;
-    }
-
-    const stat = await fs.promises.stat(filePath);
-
-    if (stat.isDirectory()) {
-      fileList = await getAllFiles(filePath, fileList, ig);
-    } else {
-      fileList.push(filePath);
-    }
-  }
-
-  return fileList;
-};
-
 const getGitStat = async (currentPath, callback) => {
   // .gitignore 파일을 처리합니다.
   const gitignorePath = path.join(RootPath, '.gitignore');
-  const gitignoreContent = await fs.promises.readFile(gitignorePath, 'utf8');
-  const ig = ignore().add(gitignoreContent);
+  let ig = ignore();
+
+  try {
+    const gitignoreContent = await fs.promises.readFile(gitignorePath, 'utf8');
+    ig.add(gitignoreContent);
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      console.log('.gitignore 파일이 없습니다.');
+    } else {
+      console.error('An error occurred:', err);
+    }
+  }
 
   // 저장소의 모든 파일 목록을 가져옵니다 (untracked 포함, .gitignore에 해당하는 파일 제외).
   const allFiles = await getAllFiles(RootPath, [], ig);
@@ -260,7 +241,6 @@ const getGitStat = async (currentPath, callback) => {
       const staged = fileStat.startsWith('*');
 
       let fileStatus;
-
       if (fileStat.includes('added')) {
         fileStatus = 'untracked';
       } else if (fileStat === 'modified' || fileStat === '*modified') {
