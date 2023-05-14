@@ -89,22 +89,31 @@ const gitCommit = async(commitMessage, authorName, authorEmail) => {
   return sha;
 };
 
-ipcMain.handle('gitCommitTry', async(event) => {
-  return new Promise((resolve, reject) => {
-    getGitStat(RootPath, (err, fileList) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(fileList);
-      }
-    });
-  });
-});
+const commitStatus = async (dir) => {
+  const matrix = await git.statusMatrix({ fs, dir });
 
-ipcMain.handle('gitCommitConfirm', async(event, commitMessage, authorName, authorEmail) => {
-  await gitCommit(commitMessage, authorName, authorEmail);
-  sendRootChanged(RootPath);
-});
+  const status = {
+    new: [],
+    modified: [],
+    deleted: []
+  };
+
+  console.log('mat : ',  matrix);
+  for (const [filepath, HeadStatus, WorkdirStatus, StageStatus] of matrix) {
+    if (HeadStatus === 0 && WorkdirStatus === 2 && StageStatus > 1) {
+      // New file
+      status.new.push(filepath);
+    } else if (HeadStatus === 1 && WorkdirStatus === 0 && StageStatus === 0) {
+      // Deleted file
+      status.deleted.push(filepath);
+    } else if (HeadStatus === 1 && WorkdirStatus === 2 && StageStatus > 1 ) {
+      // Modified file
+      status.modified.push(filepath);
+    }
+  }
+  console.log('status : ', status);
+  return status;
+};
 
 
 //for gitManaging
@@ -350,6 +359,16 @@ ipcMain.handle('gitModify', async (event, SelectedFiles, length) => {
     });
   });
 });
+
+ipcMain.handle('gitCommitTry', async(event) => {
+  return await commitStatus(RootPath);
+});
+
+ipcMain.handle('gitCommitConfirm', async(event, commitMessage, authorName, authorEmail) => {
+  await gitCommit(commitMessage, authorName, authorEmail);
+  sendRootChanged(RootPath);
+});
+
 
 
 
