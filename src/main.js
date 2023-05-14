@@ -221,10 +221,8 @@ const getGitStat = async (currentPath, callback) => {
   const statusMatrix = await git.statusMatrix({fs, dir: RootPath, filepaths: files});
 
   const fileStatsPromises = statusMatrix.map(async ([filepath, headStatus, workdirStatus, stageStatus]) => {
-    const relativePath = path.relative(currentPath, path.join(RootPath, filepath));
-
     console.log(`current path: ${currentPath}`);
-    console.log(`File: ${relativePath}`);
+    console.log(`File: ${filepath}`);
     console.log(`Head status: ${headStatus}`);
     console.log(`Workdir status: ${workdirStatus}`);
     console.log(`Stage status: ${stageStatus}`);
@@ -246,7 +244,7 @@ const getGitStat = async (currentPath, callback) => {
           resolve(null);
         }
         resolve({
-          name: relativePath,
+          name: filepath,
           staged: staged,
           status: fileStatus
         });
