@@ -64,18 +64,45 @@ function sendFileOpen(fileStatus) {
 };
 
 //for Menubar
-const gitInit = async callback => {
+const gitInit = async (currPath) => {
   try {
-    await git.resolveRef({ fs, dir: CurrPath, ref: 'HEAD' });
+    await git.resolveRef({ fs, dir: currPath, ref: 'HEAD' });
     console.log('This repository is already initialized.');
-    return callback(true);
+    return true;
   } catch (err) {
-    await git.init({ fs, dir: CurrPath});
+    await git.init({ fs, dir: currPath});
     console.log('Repository initialized.');
-    sendRootChanged(CurrPath);
-    return callback(false);
+    sendRootChanged(currPath);
+    return false;
   }
 };
+
+const commitStatus = async (dir) => {
+  const matrix = await git.statusMatrix({ fs, dir });
+
+  const status = {
+    new: [],
+    modified: [],
+    deleted: []
+  };
+
+  console.log('mat : ',  matrix);
+  for (const [filepath, HeadStatus, WorkdirStatus, StageStatus] of matrix) {
+    if (HeadStatus === 0 && WorkdirStatus === 2 && StageStatus > 1) {
+      // New file
+      status.new.push(filepath);
+    } else if (HeadStatus === 1 && WorkdirStatus === 0 && StageStatus === 0) {
+      // Deleted file
+      status.deleted.push(filepath);
+    } else if (HeadStatus === 1 && WorkdirStatus === 2 && StageStatus > 1 ) {
+      // Modified file
+      status.modified.push(filepath);
+    }
+  }
+  console.log('status : ', status);
+  return status;
+};
+
 
 const gitCommit = async(commitMessage, authorName, authorEmail) => {
   let sha = await git.commit({
@@ -92,21 +119,15 @@ const gitCommit = async(commitMessage, authorName, authorEmail) => {
 };
 
 ipcMain.handle('gitCommitTry', async(event) => {
-  return new Promise((resolve, reject) => {
-    getGitStat(RootPath, (err, fileList) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(fileList);
-      }
-    });
-  });
+  return await commitStatus(RootPath);
 });
+
 
 ipcMain.handle('gitCommitConfirm', async(event, commitMessage, authorName, authorEmail) => {
   await gitCommit(commitMessage, authorName, authorEmail);
   sendRootChanged(RootPath);
 });
+
 
 
 //for gitManaging
@@ -319,10 +340,15 @@ const gitModify = async (SelectedFiles, length, callback) => {
 
 //for menubar : clicking gitInit
 ipcMain.handle('gitInit', async (event) => {
-  return await gitInit((currentPath) => {
-    console.log(currentPath);
-    return currentPath;
-  });
+  let currPath;
+  if(CurrPath === ''){    // use triple equals for comparison
+    currPath = RootPath;
+  }else{
+    currPath = CurrPath;
+  }
+  console.log('currentPath :', currPath);
+  const gitInitResult = await gitInit(currPath);
+  return gitInitResult;
 });
 
 
@@ -391,6 +417,3 @@ ipcMain.handle('gitModify', async (event, SelectedFiles, length) => {
     });
   });
 });
-
-
-
