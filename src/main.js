@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron');  //importin
 const git = require('isomorphic-git'); // importing Isomorpihic git.
 const fs = require('fs');
 const path = require('path');
+const ignore = require('ignore');
 
 var RootPath = '';
 var CurrPath = '';
@@ -213,45 +214,80 @@ const readDirInfo = (currentPath, callback) => {
   });
 };
 
-//for US/S :
-const getGitStat = async (currentPath, callback) => {
-  const files = await git.listFiles({fs, dir: RootPath});
+const getAllFiles = async (dir, fileList = [], ig) => {
+  const files = await fs.promises.readdir(dir);
 
-  // 각 파일의 Git 상태를 가져옵니다.
-  const statusMatrix = await git.statusMatrix({fs, dir: RootPath, filepaths: files});
-
-  const fileStatsPromises = statusMatrix.map(async ([filepath, headStatus, workdirStatus, stageStatus]) => {
-    console.log(`current path: ${currentPath}`);
-    console.log(`File: ${filepath}`);
-    console.log(`Head status: ${headStatus}`);
-    console.log(`Workdir status: ${workdirStatus}`);
-    console.log(`Stage status: ${stageStatus}`);
-    if (stageStatus !== 0) {
-      return new Promise(async (resolve) => {
-        const fileStat = await git.status({
-          fs,
-          dir: RootPath,
-          filepath: filepath,
-        });
-        const staged = fileStat.startsWith('*');
-
-        let fileStatus;
-        if (fileStat.includes('added')) {
-          fileStatus = 'untracked';
-        } else if ( fileStat === 'modified' || fileStat ==='*modified') {
-          fileStatus = 'modified';
-        } else {
-          resolve(null);
-        }
-        resolve({
-          name: filepath,
-          staged: staged,
-          status: fileStatus
-        });
-      })
+  for (const file of files) {
+    // .git 디렉토리를 제외합니다.
+    if (file === '.git') {
+      continue;
     }
-    console.log('---');
-  })
+
+    const filePath = path.join(dir, file);
+    const relativePath = path.relative(RootPath, filePath);
+
+    // .gitignore에 명시된 파일 및 디렉토리를 제외합니다.
+    if (ig.ignores(relativePath)) {
+      continue;
+    }
+
+    const stat = await fs.promises.stat(filePath);
+
+    if (stat.isDirectory()) {
+      fileList = await getAllFiles(filePath, fileList, ig);
+    } else {
+      fileList.push(filePath);
+    }
+  }
+
+  return fileList;
+};
+
+const getGitStat = async (currentPath, callback) => {
+  // .gitignore 파일을 처리합니다.
+  const gitignorePath = path.join(RootPath, '.gitignore');
+  const gitignoreContent = await fs.promises.readFile(gitignorePath, 'utf8');
+  const ig = ignore().add(gitignoreContent);
+
+  // 저장소의 모든 파일 목록을 가져옵니다 (untracked 포함, .gitignore에 해당하는 파일 제외).
+  const allFiles = await getAllFiles(RootPath, [], ig);
+
+  const fileStatsPromises = allFiles.map(async (filePath) => {
+    const relativePath = path.relative(RootPath, filePath);
+
+    try {
+      const fileStat = await git.status({ fs, dir: RootPath, filepath: relativePath });
+      const staged = fileStat.startsWith('*');
+
+      let fileStatus;
+
+      if (fileStat.includes('added')) {
+        fileStatus = 'untracked';
+      } else if (fileStat === 'modified' || fileStat === '*modified') {
+        fileStatus = 'modified';
+      } else {
+        return null;
+      }
+
+      return {
+        name: relativePath,
+        staged: staged,
+        status: fileStatus,
+      };
+    } catch (err) {
+      if (err.code === 'ReadObjectFail') {
+        // untracked 파일입니다.
+        return {
+          name: relativePath,
+          staged: false,
+          status: 'untracked',
+        };
+      } else {
+        console.error('An error occurred:', err);
+        return null;
+      }
+    }
+  });
 
   const dirStat = await Promise.all(fileStatsPromises);
   const f_DirStat = dirStat.filter((item) => item !== null);
