@@ -25,42 +25,42 @@ git clone https://github.com/OSW23CAU21/OSW21_GIT_CLIENT.git
 ```
 ## Description
 ### 1. Start page  
-<img src="./re_image/start_1.png" width="400" height="400">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./re_image/start_2.png" width="400" height="400">  
+<img src="./re_image/start_1.png" width="380" height="400">&nbsp;&nbsp;&nbsp; <img src="./re_image/start_2.png" width="380" height="400">  
 ##### 프로그램 시작 시 그 어떤 폴더도 지정되어 있지 않습니다.(왼쪽)
 ##### 상단의 SETDIR을 눌러 OS파일매니저를 통해 Base를 지정해주세요.(오른쪽)
 ---
-<img src="./re_image/start_3.png" width="400" height="400">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./re_image/start_4.png" width="400" height="400">  
+<img src="./re_image/start_3.png" width="380" height="400">&nbsp;&nbsp;&nbsp; <img src="./re_image/start_4.png" width="380" height="400">  
 ##### Base가 지정되고 나면, GUI를 통해 폴더정보가 출력되며, 더블클릭, 상단의 파일경로창을 통해 자유롭게 이동가능합니다.(왼쪽)
 ##### 단 Base는 .git을 포함하고 있는 폴더여야 git 기능을 지원합니다.(오른쪽)
 ---
 
 ### 2. Commit  
-<img src="./re_image/commit_1.png" width="400" height="400"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="./re_image/commit_2.png" width="400" height="400">  
+<img src="./re_image/commit_1.png" width="380" height="400"> &nbsp;&nbsp;&nbsp; <img src="./re_image/commit_2.png" width="380" height="380">  
 ##### 변경사항이 발생한 상태입니다(외부프로그램을 통해 폴더, 파일 변경 시 꼭 Command+R을 입력하여 새로고침 해주세요.)(왼쪽)
 ##### 하단의 unstaged창 내부의 요소를 클릭한 후 버튼을 누르면, 정상적응로 staging 기능을 이용 할 수 있습니다.(오른쪽)
 ---
-<img src="./re_image/commit_3.png" width="400" height="400"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="./re_image/commit_4.png" width="400" height="400">  
+<img src="./re_image/commit_3.png" width="380" height="400"> &nbsp;&nbsp;&nbsp; <img src="./re_image/commit_4.png" width="380" height="380">  
 ##### 변경된 내용의 콘솔 창입니다.(왼쪽)
 ##### 변경 내용을 Commit하고 싶다면, 상단의 COMMIT을 눌러주세요.(오른쪽)
 ---
-<img src="./re_image/commit_5.png" width="400" height="400"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="./re_image/commit_6.png" width="400" height="400">  
+<img src="./re_image/commit_5.png" width="380" height="380"> &nbsp;&nbsp;&nbsp; <img src="./re_image/commit_6.png" width="380" height="380">  
 ##### Commit Message, Name, E-mail을 입력하면 Commit하실 수 있습니다.(왼쪽)
-##### Commit이 진행되면, Unstaged와 Staged 내부의 요소는 Commit된 내용에 맞게 변경됩니다.
+##### Commit이 진행되면, Unstaged와 Staged 내부의 요소는 Commit된 내용에 맞게 변경됩니다.(오른쪽)
 ---
-<img src="./re_image/commit_7.png" width="500" height="200">  
-##### Console창 Commit log
+<img src="./re_image/commit_7.png" width="500" height="300">  
+##### 마지막으로 Console창 Commit log이다.
 ---
 
 ### 3. Gitinit  
-<img src="./re_image/Init_1.png" width="400" height="400">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./re_image/Init_2.png" width="400" height="400">  
+<img src="./re_image/Init_1.png" width="380" height="380">&nbsp;&nbsp;&nbsp; <img src="./re_image/Init_2.png" width="380" height="400">  
 ##### 완벽하게 Commit된 상태 즉 unmodified된 상태의 디렉토리입니다.(왼쪽) 
 ##### 그 디렉토리의 하위 폴더에는 .git은 없지만, Head참조를 통해 gitmanagement여부를 알 수 있습니다.(오른쪽)
 ---
-<img src="./re_image/Init_3.png" width="400" height="400">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./re_image/Init_4.png" width="400" height="400">  
+<img src="./re_image/Init_3.png" width="380" height="400">&nbsp;&nbsp;&nbsp; <img src="./re_image/Init_4.png" width="380" height="400">  
 ##### 실행시, git init이 불가능하다는 popup이 발생됩니다.(왼쪽)
 ##### .git은 존재하지만, untracked 폴더인 testin을 가지는 디렉토리입니다.(오른쪽)
 ---
-<img src="./re_image/Init_5.png" width="400" height="400">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./re_image/Init_6.png" width="400" height="400">  
+<img src="./re_image/Init_5.png" width="380" height="400">&nbsp;&nbsp;&nbsp; <img src="./re_image/Init_6.png" width="380" height="400">  
 ##### 해당 폴더로 내려가서 git Init을 시도 시 Base폴더를 확인하여 gitInit을 실행하지 않습니다.(왼쪽)
 ##### 다만 Base 폴더를 untracked인 하위 폴더로 설정시 .git을 gitInit을 통해 생성할 수 있습니다.(오른쪽)
 ---
