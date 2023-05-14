@@ -38,7 +38,19 @@ git clone https://github.com/OSW23CAU21/OSW21_GIT_CLIENT.git
 <img src="./re_image/Init_3.png" width="400" height="400">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./re_image/Init_4.png" width="400" height="400">  
 <img src="./re_image/Init_5.png" width="400" height="400">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./re_image/Init_6.png" width="400" height="400">  
 
+## 테스트 실행환경
 
+김명진
+- MacOS Apple M1 Pro Ventura 13.0
+
+김유진
+- MacOS Apple M1 Air Ventura 13.1
+
+김재민 
+- MacOS Apple M1 Pro Monterey 12.5.1
+
+조현우
+- MacOS Apple M1 Max Ventura 13.1
 
 ## History
 
@@ -62,3 +74,4 @@ git clone https://github.com/OSW23CAU21/OSW21_GIT_CLIENT.git
 2. setDir버튼으로 Root 또는 Base가 될 폴더를 선택할 수 있습니다.
 3. S/US에서 git 파일 전체를 보여주기로 함에 따라, f_DirStat내부의 4번째 요소인 gitName을 삭제하고 name으로 대체하였습니다.
 4. 코드 내부에서 경로 값이 조금 더 잘 이해가 되도록, 변수 이름을 바꾸거나, 각주를 달았습니다.
+
