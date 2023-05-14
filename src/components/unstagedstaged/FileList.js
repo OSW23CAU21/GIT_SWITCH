@@ -11,7 +11,7 @@ const sendSelectedFiles = async (selectedFiles, length) => { //getting FileInfo 
     }
 };
 
-const FileList = ({files, onFileSelect}) => {
+const FileList = ({files, onFileSelect, buttonName}) => {
     const [selectedFiles, setSelectedFiles] = useState([]);
 
     const handleFileClick = file => {
@@ -47,7 +47,7 @@ const FileList = ({files, onFileSelect}) => {
                     ))}
                 </ul>
             </div>
-            <button onClick={handleButtonClick}>선택된 파일 이동</button>
+            <button onClick={handleButtonClick}>{buttonName}</button>
         </>
 
     );

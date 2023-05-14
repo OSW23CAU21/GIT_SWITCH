@@ -51,12 +51,12 @@ width:500px;;
    padding:1rem;   
    h3{
     padding-right:10px;
-    background: #0052CC;
+    background: #FF0044;
     color:white;
 text-align:right;
    }
    .unstaged-content{
-    height:400px;
+    height:300px;
     background:white;
    }
   `;
@@ -74,7 +74,7 @@ text-align:right;
   }
   .staged-content{
     
-    height:400px;
+    height:300px;
     background:white;
    }
   `;
@@ -82,12 +82,13 @@ text-align:right;
     <Container>
       <Staged>
         <div className="staged-content">
-          <h3>staged</h3>
+          <h3>Staged</h3>
           <FileList
             files={files.filter(file => !file.staged)}
             onFileSelect={selectedFiles =>
                 handleFileSelect(selectedFiles, true)
             }
+            buttonName="To Unstaged"
           />
         </div>
       </Staged>
@@ -99,6 +100,7 @@ text-align:right;
             onFileSelect={selectedFiles =>
               handleFileSelect(selectedFiles, false)
             }
+            buttonName="To Staged"
           />
         </div>
       </Unstaged>
