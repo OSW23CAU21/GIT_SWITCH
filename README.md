@@ -68,6 +68,15 @@ Console창 Commit log
 ##### 다만 Base 폴더를 untracked인 하위 폴더로 설정시 .git을 gitInit을 통해 생성할 수 있습니다.(오른쪽)
 ---
 
+### 4. Fileopen
+<img src="./re_image/fileopen_1.png" width="380" height="380">&nbsp;&nbsp;&nbsp; <img src="./re_image/fileopen_2.png" width="380" height="400">  
+##### GUI내부에서 파일 더블클릭시, 파일관리자 화면이 열립니다. 
+##### 파일 관리자는 GIT 관리를 받는 경우 오픈되며(왼쪽) 관리를 받지 않는 경우 오픈되지 않습니다.(오른쪽)
+##### 관리자 옵션은 하나만 설정 가능하며, git rm, git restore와 같이 깃 명령어를 기반으로 작동합니다.
+##### 단, Rename을 선택하고 변경할 이름을 적지 않는다면, 변경사항은 적용되지 않습니다.
+---
+
+
 ## Wireframe
 ![깃와이어프레임](https://github.com/OSW23CAU21/OSW21_GIT_CLIENT/assets/108653152/da455a9c-a975-4124-ae80-b2dcf4d6e15a)
 
