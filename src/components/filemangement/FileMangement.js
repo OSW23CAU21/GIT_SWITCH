@@ -158,7 +158,6 @@ function FileMangement() {
       };
       const fe = new window.FileExplorer(elem, options);
       fe.removeEventListener();
-      const folder = fe.GetCurrentFolder();
     };
 
     return () => {
