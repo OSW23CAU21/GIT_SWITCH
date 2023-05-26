@@ -5,7 +5,7 @@ const { ipcRenderer } = window.require('electron');
 
 const getDirInfo = async (CurrentPath, callback) => { //getting FileInfo from backend "main.js" using electron.
   try {
-    const result = await ipcRenderer.invoke('GitStatus', CurrentPath);
+    const result = await ipcRenderer.invoke('SUS_GitStatus', CurrentPath);
     callback(result);
   } catch (err) {
     console.error('Error reading directory info:', err);

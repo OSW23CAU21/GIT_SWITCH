@@ -5,7 +5,7 @@ const { ipcRenderer } = window.require('electron');
 
 const ReadDirectory = async (DirectoryPath) => {
     try{
-        const files = await ipcRenderer.invoke('ReadDirectory', DirectoryPath);
+        const files = await ipcRenderer.invoke('FM_ReadDirectory', DirectoryPath);
         return files;
     } catch {
         console.log('Error! chonkDir');
@@ -15,7 +15,7 @@ const ReadDirectory = async (DirectoryPath) => {
 
 const ReadBaseName = async (DirectoryPath) => {
     try{
-        const BaseName = await ipcRenderer.invoke('getFolderChain', DirectoryPath);
+        const BaseName = await ipcRenderer.invoke('FM_getFolderChain', DirectoryPath);
         return BaseName;
     } catch {
         console.log('Error to read BaseName');
@@ -103,7 +103,7 @@ const FileManagement = () => {
 
     return(
         <div style = {{height : 500}}>
-            <FileBrowser files={files} folderChain = {folderChain} fileActions={fileActions} onFileAction={handleFileAction} >
+            <FileBrowser files={files} folderChain = {folderChain} fileActions={fileActions} onFileAction={handleFileAction} darkMode = {true} >
                 <FileNavbar />
                 <FileToolbar />
                 <FileList />

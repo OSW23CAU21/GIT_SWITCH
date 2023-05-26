@@ -6,7 +6,7 @@ var RootPath = '';
 var CurrPath = '';
 
 
-const readGitStatus = async (currentPath, callback) => {
+const readGitStatus = async (rootPath, callback) => {
     let GitMatrix;
     try {
         GitMatrix = await git.statusMatrix({ fs, dir: rootPath });

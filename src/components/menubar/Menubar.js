@@ -29,12 +29,12 @@ const Menubar = () => {
 
 
   const setDirButtonClick = async () => {
-    const rootPath = await ipcRenderer.invoke('getRoot');
+    const rootPath = await ipcRenderer.invoke('MB_getRoot');
     console.log(rootPath);
   }
 
   const gitInitButtonClick = async () => {
-    const gitInit = await ipcRenderer.invoke('gitInit');
+    const gitInit = await ipcRenderer.invoke('MB_gitInit');
     console.log('gitInit', gitInit);
     if (gitInit) {
       setMessage('Current Directory is already managed by git');
@@ -43,7 +43,7 @@ const Menubar = () => {
   }
 
   const commitButtonClick = async () => {
-    const gitInfo = await ipcRenderer.invoke('gitCommitTry');
+    const gitInfo = await ipcRenderer.invoke('MB_gitCommitTry');
     console.log('gitInit : ', gitInfo);
     setGitFileInfo(gitInfo);
     setCommitDialogOpen(true);
@@ -54,7 +54,7 @@ const Menubar = () => {
     const authorNme = authorName || 'undefined author';
     const authorEml = authorEmail || 'undefined@author.com';
 
-    const gitInit = await ipcRenderer.invoke('gitCommitConfirm', commitMsg, authorNme, authorEml);
+    const gitInit = await ipcRenderer.invoke('MB_gitCommitConfirm', commitMsg, authorNme, authorEml);
     setCommitDialogOpen(false);
   }
 
