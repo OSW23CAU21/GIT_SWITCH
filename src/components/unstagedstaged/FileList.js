@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
 import './filelist.css';
-
 const {ipcRenderer} = window.require('electron');
+
 const sendSelectedFiles = async (selectedFiles, length) => { //getting FileInfo from backend "main.js" using electron.
     console.log(selectedFiles);
     try {
-        const result = await ipcRenderer.invoke('gitModify', selectedFiles, length);
+        const result = await ipcRenderer.invoke('GitAdd', selectedFiles, length);
     } catch {
         console.error('Error : gitModify');
     }

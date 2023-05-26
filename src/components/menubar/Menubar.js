@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { buttonStyle, dialogStyle } from './Style';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, List, ListItem } from '@mui/material';
 
 const { ipcRenderer } = window.require('electron');
@@ -57,6 +58,7 @@ const Menubar = () => {
     setCommitDialogOpen(false);
   }
 
+
   return (
     <div>
       <Dialog open={open} onClose={() => setOpen(false)}>
@@ -95,7 +97,7 @@ const Menubar = () => {
         </DialogActions>
       </Dialog>
 
-      <Button onClick={setDirButtonClick}>SetDir</Button>
+      <Button sx = {buttonStyle} onClick={setDirButtonClick}>SetDir</Button>
       <Button onClick={gitInitButtonClick}>GitInit</Button>
       <Button onClick={commitButtonClick}>Commit</Button>
 

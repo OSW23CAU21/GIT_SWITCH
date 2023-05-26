@@ -17,15 +17,6 @@ const initialFiles = [];
 const UnstagedStaged = () => {
   const [files, setFiles] = useState(initialFiles);
   const [CurrentPath, setCurrentPath] = useState('');
-  useEffect(() => {
-    ipcRenderer.on('CurrentPathChanged', (_, newCurrentPath) => {
-      //console.log('newCurrentPath :', newCurrentPath);
-      setCurrentPath(newCurrentPath);
-    });
-    return () => {
-      ipcRenderer.removeAllListeners('CurrentPathChanged');
-    };
-  }, []);
   
   useEffect (() => {
     //console.log('getDirInfo :', CurrentPath);
