@@ -1,13 +1,12 @@
 import React, {useState} from 'react';
 import './filelist.css';
-
 const {ipcRenderer} = window.require('electron');
+
 const sendSelectedFiles = async (selectedFiles, length) => { //getting FileInfo from backend "main.js" using electron.
-    console.log(selectedFiles);
     try {
-        const result = await ipcRenderer.invoke('gitModify', selectedFiles, length);
+        return await ipcRenderer.invoke('SUS_GitAdd', selectedFiles, length);
     } catch {
-        console.error('Error : gitModify');
+        console.error('Error : gitAdd');
     }
 };
 
@@ -22,10 +21,8 @@ const FileList = ({files, onFileSelect, buttonName}) => {
         }
     };
 
-    const handleButtonClick = () => {
-        onFileSelect(selectedFiles);
-        console.log('selectedFiles', selectedFiles);
-        sendSelectedFiles(selectedFiles, selectedFiles.length);
+    const handleButtonClick = async () => {
+        sendSelectedFiles(selectedFiles, selectedFiles.length).then(onFileSelect);
         setSelectedFiles([]);
     };
 

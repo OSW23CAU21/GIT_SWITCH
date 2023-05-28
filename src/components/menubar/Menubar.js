@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { buttonStyle, dialogStyle } from './Style';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, List, ListItem } from '@mui/material';
 
 const { ipcRenderer } = window.require('electron');
@@ -28,12 +29,12 @@ const Menubar = () => {
 
 
   const setDirButtonClick = async () => {
-    const rootPath = await ipcRenderer.invoke('getRoot');
+    const rootPath = await ipcRenderer.invoke('MB_getRoot');
     console.log(rootPath);
   }
 
   const gitInitButtonClick = async () => {
-    const gitInit = await ipcRenderer.invoke('gitInit');
+    const gitInit = await ipcRenderer.invoke('MB_gitInit');
     console.log('gitInit', gitInit);
     if (gitInit) {
       setMessage('Current Directory is already managed by git');
@@ -42,7 +43,7 @@ const Menubar = () => {
   }
 
   const commitButtonClick = async () => {
-    const gitInfo = await ipcRenderer.invoke('gitCommitTry');
+    const gitInfo = await ipcRenderer.invoke('MB_gitCommitTry');
     console.log('gitInit : ', gitInfo);
     setGitFileInfo(gitInfo);
     setCommitDialogOpen(true);
@@ -53,26 +54,13 @@ const Menubar = () => {
     const authorNme = authorName || 'undefined author';
     const authorEml = authorEmail || 'undefined@author.com';
 
-    const gitInit = await ipcRenderer.invoke('gitCommitConfirm', commitMsg, authorNme, authorEml);
+    const gitInit = await ipcRenderer.invoke('MB_gitCommitConfirm', commitMsg, authorNme, authorEml);
     setCommitDialogOpen(false);
   }
 
+
   return (
     <div>
-      <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle>{"Git Initialization Result"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {message}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpen(false)}>
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
-
       <Dialog open={commitDialogOpen} onClose={() => setCommitDialogOpen(false)}>
         <DialogTitle>{"Commit Changes"}</DialogTitle>
         <DialogContent>
@@ -94,9 +82,7 @@ const Menubar = () => {
           </Button>
         </DialogActions>
       </Dialog>
-
-      <Button onClick={setDirButtonClick}>SetDir</Button>
-      <Button onClick={gitInitButtonClick}>GitInit</Button>
+      <Button sx = {buttonStyle} onClick={setDirButtonClick}>SetDir</Button>
       <Button onClick={commitButtonClick}>Commit</Button>
 
 
