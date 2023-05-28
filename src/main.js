@@ -17,6 +17,11 @@ function createWindow() {
   })
   win.loadURL("http://localhost:3000");
 };
+
+function sendRootChanged (rootPath) {
+  win.webContents.send('MB_getRoot', rootPath);
+};
+
 app.whenReady().then(() => {
   createWindow()
 });
@@ -24,3 +29,5 @@ app.whenReady().then(() => {
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit()
 });
+
+module.exports = {sendRootChanged};

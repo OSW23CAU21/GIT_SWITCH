@@ -61,20 +61,6 @@ const Menubar = () => {
 
   return (
     <div>
-      <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle>{"Git Initialization Result"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {message}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpen(false)}>
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
-
       <Dialog open={commitDialogOpen} onClose={() => setCommitDialogOpen(false)}>
         <DialogTitle>{"Commit Changes"}</DialogTitle>
         <DialogContent>
@@ -96,9 +82,7 @@ const Menubar = () => {
           </Button>
         </DialogActions>
       </Dialog>
-
       <Button sx = {buttonStyle} onClick={setDirButtonClick}>SetDir</Button>
-      <Button onClick={gitInitButtonClick}>GitInit</Button>
       <Button onClick={commitButtonClick}>Commit</Button>
 
 

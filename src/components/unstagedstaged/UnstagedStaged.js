@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import FileList from './FileList';
 import styled from 'styled-components';
+import GitBrowser from '../filemanagement/GitSpaceBrowser';
 const { ipcRenderer } = window.require('electron');
 
 const getDirInfo = async (CurrentPath, callback) => { //getting FileInfo from backend "main.js" using electron.
@@ -16,20 +17,27 @@ const initialFiles = [];
 
 const UnstagedStaged = () => {
   const [files, setFiles] = useState(initialFiles);
-  const [CurrentPath, setCurrentPath] = useState('');
-  
-  useEffect (() => {
-    //console.log('getDirInfo :', CurrentPath);
-   getDirInfo(CurrentPath, (contents) => {
+  const [rootPath, setRootPath] = useState('');
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  useEffect(() => {
+    ipcRenderer.on('RootPathChanged', (_, newRootPath) => {
+      setRootPath(newRootPath);
+    });
+    return () => {
+      ipcRenderer.removeAllListeners('RootPathChanged');
+    };
+  }, []);
+
+
+  useEffect(() => {
+    getDirInfo(rootPath, (contents) => {
       setFiles(contents);
-    }); 
-  }, [CurrentPath]);
-   
-  const handleFileSelect = (selectedFiles, staged) => {
-    const updatedFiles = files.map(file =>
-      selectedFiles.includes(file) ? { ...file, staged } : file
-    );
-    setFiles(updatedFiles);
+    });
+  }, [rootPath, refreshKey]);
+
+  const refresh = () => {
+    setRefreshKey(refreshKey + 1);
   };
 
   const Container = styled.div`
@@ -76,9 +84,7 @@ text-align:right;
           <h3>Staged</h3>
           <FileList
             files={files.filter(file => !file.staged)}
-            onFileSelect={selectedFiles =>
-                handleFileSelect(selectedFiles, true)
-            }
+            onFileSelect={refresh}
             buttonName="To Unstaged"
           />
         </div>
@@ -88,9 +94,7 @@ text-align:right;
           <h3>Unstaged</h3>
           <FileList
             files={files.filter(file => file.staged)}
-            onFileSelect={selectedFiles =>
-              handleFileSelect(selectedFiles, false)
-            }
+            onFileSelect={refresh}
             buttonName="To Staged"
           />
         </div>

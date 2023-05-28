@@ -1,10 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 
-var RootPath = '';
-var CurrPath = '';
-
-
 //for gitManaging
 async function del(file){
   fs.unlink(file, function(err){

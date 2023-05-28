@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {FileNavbar, FileToolbar, FileList, FileContextMenu, FileBrowser, ChonkyActions, defineFileAction, ChonkyIconName} from "chonky";
-
+//hello
 const { ipcRenderer } = window.require('electron');
 
 const readGitStatus = async (DirectoryPath) => {
@@ -22,15 +22,15 @@ const ReadBaseName = async (DirectoryPath) => {
         return null;
     }
 }
-const GitManagement = () => {
+const GitBrowser = () => {
     const [directoryPath, setDirectoryPath] = useState('./');
     const [files, setFiles] = useState([]);
     const [folderChain, setFolderChain] = useState([]);
 
-    const CreateFile = defineFileAction({
-        id : 'CreateFile',
+    const Untrack = defineFileAction({
+        id : 'Untrack',
         button: {
-            name: 'CreateFile',
+            name: 'Untrack',
             toolbar: false,
             contextMenu: true,
             icon: ChonkyIconName.flash,
@@ -38,7 +38,7 @@ const GitManagement = () => {
     });
 
     const Rename = defineFileAction({
-        id : 'Rename',
+        id : 'Restore',
         button: {
             name: 'Rename',
             toolbar: false,
@@ -57,7 +57,17 @@ const GitManagement = () => {
         },
     });
 
-    const fileActions = [CreateFile, Rename, Delete];
+    const RestoreFile = defineFileAction({
+        id : 'RestoreFile',
+        button: {
+            name: 'RestoreFile',
+            toolbar: false,
+            contextMenu: true,
+            icon: ChonkyIconName.flash,
+        },
+    });
+
+    const fileActions = [Untrack, Rename, Delete, RestoreFile];
 
     const handleFileAction = useCallback((data) => {
         if (data.id === ChonkyActions.OpenFiles.id) {
@@ -78,32 +88,10 @@ const GitManagement = () => {
         };
       }, []);
 
-    useEffect(() => {
-        ReadDirectory(directoryPath).then(fetchedFiles => {
-            if (Array.isArray(fetchedFiles)) {
-                setFiles(fetchedFiles);
-            } else {
-                console.log("error reading directory");
-            }
-        });
-    }, [directoryPath]);
-
-    useEffect(() => {
-        ReadBaseName(directoryPath).then(fetchedName => {
-            setFolderChain(prevFolderChain => {
-                const isIndex = prevFolderChain.findIndex(item => item.id === fetchedName[0]);
-                if (isIndex !== -1) {
-                    return prevFolderChain.slice(0, isIndex + 1);
-                } else {
-                    return [...prevFolderChain, {id: fetchedName[0], name: fetchedName[1], isDir: true}];
-                }
-            });
-        });
-    }, [directoryPath]);
 
     return(
         <div style = {{height : 500}}>
-            <FileBrowser files={files} folderChain = {folderChain} fileActions={fileActions} onFileAction={handleFileAction} >
+            <FileBrowser files={files} folderChain = {folderChain} fileActions={fileActions} onFileAction={handleFileAction} darkMode ={true}>
                 <FileNavbar />
                 <FileToolbar />
                 <FileList />
@@ -113,4 +101,4 @@ const GitManagement = () => {
     );
 };
 
-export default GitManagement;
+export default GitBrowser;

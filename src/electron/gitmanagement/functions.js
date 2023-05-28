@@ -2,10 +2,6 @@ const git = require('isomorphic-git'); // importing Isomorpihic git.
 const fs = require('fs');
 const path = require('path');
 
-var RootPath = '';
-var CurrPath = '';
-
-
 const readGitStatus = async (rootPath, callback) => {
     let GitMatrix;
     try {
