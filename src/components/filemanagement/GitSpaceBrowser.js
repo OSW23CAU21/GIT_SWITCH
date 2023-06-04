@@ -1,11 +1,17 @@
+//Todo, gitspace by tab
+// please display "branch name" at tap name not gitspace
+// please display "branch's sha" at folderchain's base name. 
+// you can easily add git space tab by clicking '+' button. 
+// if workspace is not managed by git, when you click '+' git will be initiate your work space.
+
 import React, { useState, useEffect, useCallback } from 'react';
-import {FileNavbar, FileToolbar, FileList, FileContextMenu, FileBrowser, ChonkyActions, defineFileAction, ChonkyIconName} from "chonky";
-//hello
+import { FileNavbar, FileToolbar, FileList, FileContextMenu, FileBrowser, ChonkyActions, defineFileAction, ChonkyIconName } from "chonky";
+
 const { ipcRenderer } = window.require('electron');
 
-const readGitStatus = async (DirectoryPath) => {
-    try{
-        const files = await ipcRenderer.invoke('GM_readGit', DirectoryPath);
+const readGitStatus = async (RootPath, DirectoryPath) => {
+    try {
+        const files = await ipcRenderer.invoke('GM_readGit', RootPath, DirectoryPath);
         return files;
     } catch {
         console.log('Error! chonkDir');
@@ -13,22 +19,10 @@ const readGitStatus = async (DirectoryPath) => {
     }
 };
 
-const ReadBaseName = async (DirectoryPath) => {
-    try{
-        const BaseName = await ipcRenderer.invoke('GM_getFolderChain', DirectoryPath);
-        return BaseName;
-    } catch {
-        console.log('Error to read BaseName');
-        return null;
-    }
-}
-const GitBrowser = () => {
-    const [directoryPath, setDirectoryPath] = useState('./');
+const GitBrowser = ({ directoryPath, setDirectoryPath, folderChain}) => {
     const [files, setFiles] = useState([]);
-    const [folderChain, setFolderChain] = useState([]);
-
     const Untrack = defineFileAction({
-        id : 'Untrack',
+        id: 'Untrack',
         button: {
             name: 'Untrack',
             toolbar: false,
@@ -38,7 +32,7 @@ const GitBrowser = () => {
     });
 
     const Rename = defineFileAction({
-        id : 'Restore',
+        id: 'Restore',
         button: {
             name: 'Rename',
             toolbar: false,
@@ -48,7 +42,7 @@ const GitBrowser = () => {
     });
 
     const Delete = defineFileAction({
-        id : 'Delete',
+        id: 'Delete',
         button: {
             name: 'Delete',
             toolbar: false,
@@ -58,7 +52,7 @@ const GitBrowser = () => {
     });
 
     const RestoreFile = defineFileAction({
-        id : 'RestoreFile',
+        id: 'RestoreFile',
         button: {
             name: 'RestoreFile',
             toolbar: false,
@@ -67,7 +61,20 @@ const GitBrowser = () => {
         },
     });
 
+
     const fileActions = [Untrack, Rename, Delete, RestoreFile];
+
+    
+    useEffect(() => {
+        readGitStatus(folderChain[0].id, directoryPath).then(fetchedFiles => {
+            if (Array.isArray(fetchedFiles)) {
+                setFiles(fetchedFiles);
+            } else {
+                console.log("error reading directory");
+            }
+        });
+        console.log(folderChain);
+    }, [directoryPath]);
 
     const handleFileAction = useCallback((data) => {
         if (data.id === ChonkyActions.OpenFiles.id) {
@@ -76,22 +83,12 @@ const GitBrowser = () => {
             setDirectoryPath(data.payload.targetFile.id);
         }
     }, []);
-    
-
-    useEffect(() => {
-        ipcRenderer.on('RootNameChanged', (_, newRootPath) => {
-          console.log('newPath allocated : ',newRootPath);
-          setDirectoryPath(newRootPath);
-        });
-        return () => {
-          ipcRenderer.removeAllListeners('RootPathChanged');
-        };
-      }, []);
 
 
-    return(
-        <div style = {{height : 500}}>
-            <FileBrowser files={files} folderChain = {folderChain} fileActions={fileActions} onFileAction={handleFileAction} darkMode ={true}>
+
+    return (
+        <div style={{ height: 500 }}>
+            <FileBrowser files = {files} folderChain = {folderChain} fileActions={fileActions} onFileAction={handleFileAction}>
                 <FileNavbar />
                 <FileToolbar />
                 <FileList />
