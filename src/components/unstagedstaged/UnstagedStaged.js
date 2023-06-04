@@ -50,7 +50,7 @@ width:500px;;
    padding:1rem;   
    h3{
     padding-right:10px;
-    background: #FF0044;
+    background: #99c2ff;
     color:white;
 text-align:right;
    }

@@ -13,20 +13,8 @@ const ReadDirectory = async (DirectoryPath) => {
     }
 };
 
-const ReadBaseName = async (DirectoryPath) => {
-    try{
-        const BaseName = await ipcRenderer.invoke('FM_getFolderChain', DirectoryPath);
-        return BaseName;
-    } catch {
-        console.log('Error to read BaseName');
-        return null;
-    }
-}
-const FileBrowsers = () => {
-    const [directoryPath, setDirectoryPath] = useState('./');
+const FileBrowsers = ({ directoryPath, setDirectoryPath, folderChain}) => {
     const [files, setFiles] = useState([]);
-    const [folderChain, setFolderChain] = useState([]);
-    const [rootFlag, setRootFlag] = useState(false);
 
     const CreateFile = defineFileAction({
         id : 'CreateFile',
@@ -58,6 +46,7 @@ const FileBrowsers = () => {
         },
     });
 
+
     const fileActions = [CreateFile, Rename, Delete];
 
     const handleFileAction = useCallback((data) => {
@@ -69,16 +58,6 @@ const FileBrowsers = () => {
     }, []);
     
 
-    useEffect(() => {
-        ipcRenderer.on('RootPathChanged', (_, newRootPath) => {
-          console.log('newPath allocated : ',newRootPath);
-          setRootFlag(true);
-          setDirectoryPath(newRootPath);
-        });
-        return () => {
-          ipcRenderer.removeAllListeners('RootPathChanged');
-        };
-      }, []);
 
     useEffect(() => {
         ReadDirectory(directoryPath).then(fetchedFiles => {
@@ -90,26 +69,11 @@ const FileBrowsers = () => {
         });
     }, [directoryPath]);
 
-    useEffect(() => {
-        ReadBaseName(directoryPath).then(fetchedName => {
-            if(rootFlag){
-                setFolderChain([{id: fetchedName[0], name: fetchedName[1], isDir: true}]);
-                setRootFlag(false);
-            }
-            setFolderChain(prevFolderChain => {
-                const isIndex = prevFolderChain.findIndex(item => item.id === fetchedName[0]);
-                if (isIndex !== -1) {
-                    return prevFolderChain.slice(0, isIndex + 1);
-                } else {
-                    return [...prevFolderChain, {id: fetchedName[0], name: fetchedName[1], isDir: true}];
-                }
-            });
-        });
-    }, [directoryPath]);
+
 
     return(
         <div style = {{height : 500}}>
-            <FileBrowser files={files} folderChain = {folderChain} fileActions={fileActions} onFileAction={handleFileAction} darkMode = {false} >
+            <FileBrowser files={files} folderChain = {folderChain} fileActions={fileActions} onFileAction={handleFileAction} darkMode = {true} >
                 <FileNavbar />
                 <FileToolbar />
                 <FileList />

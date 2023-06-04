@@ -18,12 +18,10 @@ const GetGitStatus = async (rootPath, callback) => {
     callback(null, []);
   }
 
-  console.log(GitMatrix);
-
   for (const [filePath, HeadStatus, WorkdirStatus, StageStatus] of GitMatrix) {
     FileStatus = [];
     if (HeadStatus === 0 && WorkdirStatus === 2) { // untracked, added
-      FileStatus = { name: filePath, staged: true, status: 'untracked', root : rootPath }
+      FileStatus = { name: filePath, staged: true, status: 'untracked',root : rootPath }
       if (StageStatus === 2) {
         FileStatus.staged = false;
         FileStatus.status = 'added';
@@ -50,7 +48,6 @@ const GetGitStatus = async (rootPath, callback) => {
     }
     StageMatrix.push({...FileStatus});
   }
-  console.log(StageMatrix);
   callback(null, StageMatrix);
 };
 

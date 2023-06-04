@@ -49,7 +49,7 @@ const readDirInfo = (currentPath, callback) => {
           fileInfo = {
             id: path.resolve(filePath),
             name: file,
-            color: '#08f',
+            color: '#e6e6e6',
           };
         }
         DirContents.push(fileInfo);
