@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { buttonStyle, dialogStyle } from './Style';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, List, ListItem } from '@mui/material';
+import GitBranchDialog from "./BranchMenu";
 
 const { ipcRenderer } = window.require('electron');
 
@@ -84,7 +85,10 @@ const Menubar = () => {
       </Dialog>
       <Button sx = {buttonStyle} onClick={setDirButtonClick}>SetDir</Button>
       <Button onClick={commitButtonClick}>Commit</Button>
-
+      <GitBranchDialog action="Create" />
+      <GitBranchDialog action="Delete" />
+      <GitBranchDialog action="Rename" />
+      <GitBranchDialog action="Checkout" />
 
     </div>
   );
