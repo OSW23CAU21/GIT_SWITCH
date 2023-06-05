@@ -61,31 +61,7 @@ const Menubar = () => {
 
   return (
     <div>
-      <Dialog open={commitDialogOpen} onClose={() => setCommitDialogOpen(false)}>
-        <DialogTitle>{"Commit Changes"}</DialogTitle>
-        <DialogContent>
-          <List>
-            {Object.entries(gitFileInfo).map(([status, filePaths]) => (
-            <FileStatusList key={status} status={status} filePaths={filePaths} />
-            ))}
-          </List>
-          <TextField autoFocus margin="dense" label="Commit Message" type="text" fullWidth variant="outlined" value={commitMessage} onChange={(e) => setCommitMessage(e.target.value)} />
-          <TextField margin="dense" label="Author Name" type="text" fullWidth variant="outlined" value={authorName} onChange={(e) => setAuthorName(e.target.value)} />
-          <TextField margin="dense" label="Author Email" type="text" fullWidth variant="outlined" value={authorEmail} onChange={(e) => setAuthorEmail(e.target.value)} />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setCommitDialogOpen(false)}>
-            Close
-          </Button>
-          <Button onClick={handleCommit}>
-            Confirm
-          </Button>
-        </DialogActions>
-      </Dialog>
       <Button sx = {buttonStyle} onClick={setDirButtonClick}>SetDir</Button>
-      <Button onClick={commitButtonClick}>Commit</Button>
-
-
     </div>
   );
 };
