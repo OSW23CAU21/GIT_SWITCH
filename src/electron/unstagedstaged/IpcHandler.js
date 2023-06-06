@@ -15,5 +15,12 @@ ipcMain.handle('SUS_GitStatus', async (event, rootPath) => {
 });
 
 ipcMain.handle('SUS_GitAdd', async (event, SelectedFiles, length) => {
-  await gitAdd(SelectedFiles, length);
+  const result = await gitAdd(SelectedFiles, length);
+  if (result == true) {
+    event.sender.send('Refresh_SUS');
+    event.sender.send('Refresh_GM');
+    return result;
+  } else {
+    return result;
+  }
 });

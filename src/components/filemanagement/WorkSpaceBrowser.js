@@ -1,10 +1,19 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import {FileNavbar, FileToolbar, FileList, FileContextMenu, FileBrowser, ChonkyActions, defineFileAction, ChonkyIconName} from "chonky";
+import { FileNavbar, FileToolbar, FileList, FileContextMenu, FileBrowser, ChonkyActions, defineFileAction, ChonkyIconName} from "chonky";
 
 const { ipcRenderer } = window.require('electron');
+const actionsToDisable = [
+    ChonkyActions.ToggleHiddenFiles.id,
+    ChonkyActions.SortFilesByDate.id,
+    ChonkyActions.SortFilesBySize.id,
+    ChonkyActions.OpenSelection.id,
+    ChonkyActions.SelectAllFiles.id,
+    ChonkyActions.ClearSelection.id,
+];
+
 
 const ReadDirectory = async (DirectoryPath) => {
-    try{
+    try {
         const files = await ipcRenderer.invoke('FM_ReadDirectory', DirectoryPath);
         return files;
     } catch {
@@ -13,50 +22,78 @@ const ReadDirectory = async (DirectoryPath) => {
     }
 };
 
-const FileBrowsers = ({ directoryPath, setDirectoryPath, folderChain}) => {
+const FileBrowsers = ({ directoryPath, setDirectoryPath, folderChain }) => {
     const [files, setFiles] = useState([]);
+    const [refreshKey, setRefreshKey] = useState(0);
 
     const CreateFile = defineFileAction({
-        id : 'CreateFile',
+        id: 'CreateFile',
         button: {
-            name: 'CreateFile',
-            toolbar: false,
-            contextMenu: true,
-            icon: ChonkyIconName.flash,
+            name: 'Create File',
+            toolbar: true,
+            contextMenu: false,
+            icon: ChonkyIconName.file,
         },
     });
 
     const Rename = defineFileAction({
-        id : 'Rename',
+        id: 'Rename',
         button: {
             name: 'Rename',
             toolbar: false,
             contextMenu: true,
-            icon: ChonkyIconName.flash,
+            icon: ChonkyIconName.clearSelection,
         },
     });
 
     const Delete = defineFileAction({
-        id : 'Delete',
+        id: 'Delete',
         button: {
             name: 'Delete',
             toolbar: false,
             contextMenu: true,
-            icon: ChonkyIconName.flash,
+            icon: ChonkyIconName.trash,
         },
     });
 
-
-    const fileActions = [CreateFile, Rename, Delete];
+    const fileActions = [CreateFile, Rename, Delete, ChonkyActions.CreateFolder];
 
     const handleFileAction = useCallback((data) => {
+        console.log(data);
         if (data.id === ChonkyActions.OpenFiles.id) {
             if (data.payload.files && data.payload.files.length !== 1) return;
-            if (!data.payload.targetFile || !data.payload.targetFile.isDir) return;
-            setDirectoryPath(data.payload.targetFile.id);
+            if (!data.payload.targetFile) return;
+            if (data.payload.targetFile.isDir){
+                setDirectoryPath(data.payload.targetFile.id);
+            } else {
+                ipcRenderer.invoke('FM_openFile', folderChain[0].id, data.payload.targetFile.id);
+            }
+        }
+
+        if (data.state.selectedFiles.length == 1 && data.id === 'Rename'){ 
+            console.log('Rename');
+        }
+
+        if(data.state.selectedFiles.length > 0 && data.id === 'Delete'){
+            console.log('Delete');
+        }
+
+        if(data.id === 'CreateFile'){
+            console.log('CreateFile');
+        } else if(data.id === 'create_folder'){
+            console.log('CreateFolder');
         }
     }, []);
-    
+
+    useEffect(() => {
+        ipcRenderer.on('Refresh_FM', (_) => {
+            console.log('GMRefreshing Firing up!');
+            setRefreshKey(prevRefreshKey => prevRefreshKey + 1);
+        });
+        return () => {
+            ipcRenderer.removeAllListeners('Refresh_FM');
+        };
+    }, [])
 
 
     useEffect(() => {
@@ -71,9 +108,16 @@ const FileBrowsers = ({ directoryPath, setDirectoryPath, folderChain}) => {
 
 
 
-    return(
-        <div style = {{height : 500}}>
-            <FileBrowser files={files} folderChain = {folderChain} fileActions={fileActions} onFileAction={handleFileAction} darkMode = {true} >
+    return (
+        <div style={{ height: 500 }}>
+            <FileBrowser
+                files={files}
+                folderChain={folderChain}
+                fileActions={fileActions}
+                onFileAction={handleFileAction}
+                darkMode={true}
+                disableDefaultFileActions={actionsToDisable}
+            >
                 <FileNavbar />
                 <FileToolbar />
                 <FileList />

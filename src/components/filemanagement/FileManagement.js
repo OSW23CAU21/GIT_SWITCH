@@ -1,11 +1,36 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Fab, useTheme } from "@mui/material"
+import { styled } from '@mui/system';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import AppleIcon from '@mui/icons-material/Apple';
 import WorkSpaceBrowser from './WorkSpaceBrowser';
 import GitBrowser from './GitSpaceBrowser';
 
 const { ipcRenderer } = window.require('electron');
+
+
+
+const StyledOSFab = styled(Fab)(({ theme }) => ({
+    position: 'fixed',
+    bottom: theme.spacing(2),
+    right: theme.spacing(2),
+    color: '#666666',
+    backgroundColor: '#FFFFFF',
+    '&:hover': {
+        backgroundColor: '#64BDFF',
+    },
+}));
+
+const StyledGitFab = styled(Fab)(({ theme }) => ({
+    position: 'fixed',
+    bottom: theme.spacing(2),
+    right: theme.spacing(2),
+    color: '#FFFFFF',
+    backgroundColor: '#666666',
+    '&:hover': {
+        backgroundColor: '#64BDFF',
+    },
+}));
 
 const ReadBaseName = async (DirectoryPath) => {
     try {
@@ -17,7 +42,7 @@ const ReadBaseName = async (DirectoryPath) => {
     }
 }
 
-const ReadBranchName = async (rootPath) =>{
+const ReadBranchName = async (rootPath) => {
     try {
         const branchName = await ipcRenderer.invoke('GM_branchName', rootPath);
         return branchName;
@@ -29,13 +54,12 @@ const ReadBranchName = async (rootPath) =>{
 
 const FileManagement = () => {
     const [activeTab, setActiveTab] = useState(0);
-    const [directoryPath, setDirectoryPath] = useState('./');
+    const [directoryPath, setDirectoryPath] = useState('');
     const [folderChain, setFolderChain] = useState([]);
     const [rootFlag, setRootFlag] = useState(false);
 
     useEffect(() => {
         ipcRenderer.on('RootPathChanged', (_, newRootPath) => {
-            console.log('newPath allocated : ', newRootPath);
             setRootFlag(true);
             setDirectoryPath(newRootPath);
         });
@@ -64,25 +88,23 @@ const FileManagement = () => {
 
 
     const switchTabs = async () => {
-        if(activeTab === 0){
+        if (activeTab === 0) {
             const branchName = await ReadBranchName(folderChain[0].id);
             setFolderChain(prevChain => {
-                const newFolderChain = [...prevChain];  
-                newFolderChain[0] = {...newFolderChain[0], name: branchName};
-                return newFolderChain;  
+                const newFolderChain = [...prevChain];
+                newFolderChain[0] = { ...newFolderChain[0], name: branchName };
+                return newFolderChain;
             });
         } else {
             const baseName = await ReadBaseName(folderChain[0].id);
             setFolderChain(prevChain => {
-                const newFolderChain = [...prevChain];  
-                newFolderChain[0] = {...newFolderChain[0], name: baseName[1]};
-                return newFolderChain; 
+                const newFolderChain = [...prevChain];
+                newFolderChain[0] = { ...newFolderChain[0], name: baseName[1] };
+                return newFolderChain;
             });
         }
-        setActiveTab((prev) => prev === 0 ? 1 : 0); 
+        setActiveTab((prev) => prev === 0 ? 1 : 0);
     }
-
-    const theme = useTheme(); 
 
     return (
         <div>
@@ -94,9 +116,9 @@ const FileManagement = () => {
                             setDirectoryPath={setDirectoryPath}
                             folderChain={folderChain}
                         />
-                        <Fab color="primary" aria-label="switch" onClick={switchTabs} style={{ position: 'fixed', bottom: theme.spacing(2), right: theme.spacing(2) }}>
+                        <StyledOSFab aria-label="switch" onClick={switchTabs} >
                             <AppleIcon />
-                        </Fab>
+                        </StyledOSFab>
                     </> :
                     <>
                         <GitBrowser
@@ -104,13 +126,12 @@ const FileManagement = () => {
                             setDirectoryPath={setDirectoryPath}
                             folderChain={folderChain}
                         />
-                        <Fab color="secondary" aria-label="switch" onClick={switchTabs} style={{ position: 'fixed', bottom: theme.spacing(2), right: theme.spacing(2) }}>
+                        <StyledGitFab aria-label="switch" onClick={switchTabs} >
                             <GitHubIcon />
-                        </Fab>
+                        </StyledGitFab>
                     </>
             }
         </div>
     );
 }
-
 export default FileManagement;

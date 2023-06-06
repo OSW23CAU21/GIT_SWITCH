@@ -29,6 +29,15 @@ const UnstagedStaged = () => {
     };
   }, []);
 
+  useEffect(() => {
+    ipcRenderer.on('Refresh_SUS', (_) => {
+        refresh();
+    });
+    return () => {
+        ipcRenderer.removeAllListeners('Refresh_SUS');
+    };
+}, [])
+
 
   useEffect(() => {
     getDirInfo(rootPath, (contents) => {
@@ -37,7 +46,7 @@ const UnstagedStaged = () => {
   }, [rootPath, refreshKey]);
 
   const refresh = () => {
-    setRefreshKey(refreshKey + 1);
+    setRefreshKey(prevrefreshKey => prevrefreshKey + 1);
   };
 
   const Container = styled.div`

@@ -64,9 +64,9 @@ const gitAdd = (SelectedFiles, length) => {
         } else {
           await git.resetIndex({ fs, dir: SelectedFiles[i].root, filepath: SelectedFiles[i].name });
         }
-      } resolve();
+      } resolve(true);
     }catch{
-      reject();
+      reject(false);
     }
   });
 };
