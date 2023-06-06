@@ -1,32 +1,44 @@
 import React, {useState} from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
+import {useEffect} from "@types/react";
 
 const {ipcRenderer} = window.require('electron');
+
+const createBranch = async (rootPath, branchName) => {
+    const result = await ipcRenderer.invoke('create_branch', rootPath, branchName);
+    console.log('result', result);
+}
+
+const deleteBranch = async (rootPath, branchName) => {
+    const result = await ipcRenderer.invoke('delete_branch', rootPath, branchName);
+    console.log('result', result);
+}
+
+const renameBranch = async (rootPath, branchName, newBranchName) => {
+    const result = await ipcRenderer.invoke('rename_branch', rootPath, branchName, newBranchName);
+    console.log('result', result);
+}
+
+const checkoutBranch = async (rootPath, branchName) => {
+    const result = await ipcRenderer.invoke('checkout_branch', rootPath, branchName);
+    console.log('result', result);
+}
 
 function GitBranchDialog({ action }) {
     const [open, setOpen] = useState(false);
     const [branchName, setBranchName] = useState('');
     const [newBranchName, setNewBranchName] = useState('');
+    const [rootPath, setRootPath] = useState('');
+    const [refreshKey, setRefreshKey] = useState(0);
 
-    const createBranch = async (branchName) => {
-        const result = await ipcRenderer.invoke('create_branch', branchName);
-        console.log('result', result);
-    }
-
-    const deleteBranch = async (branchName) => {
-        const result = await ipcRenderer.invoke('delete_branch', branchName);
-        console.log('result', result);
-    }
-
-    const renameBranch = async (branchName, newBranchName) => {
-        const result = await ipcRenderer.invoke('rename_branch', branchName, newBranchName);
-        console.log('result', result);
-    }
-
-    const checkoutBranch = async (branchName) => {
-        const result = await ipcRenderer.invoke('checkout_branch', branchName);
-        console.log('result', result);
-    }
+    useEffect(() => {
+        ipcRenderer.on('RootPathChanged', (_, newRootPath) => {
+            setRootPath(newRootPath);
+        });
+        return () => {
+            ipcRenderer.removeAllListeners('RootPathChanged');
+        };
+    }, []);
 
 
     const handleClickOpen = () => {
@@ -40,16 +52,16 @@ function GitBranchDialog({ action }) {
     const handleSubmit = () => {
         // 여기에 각 기능에 대한 구현을 추가하세요.
         if(action === 'Create'){
-            createBranch(branchName)
+            createBranch(rootPath, branchName)
             console.log(`Action: ${action}, Branch Name: ${branchName}`);
         } else if(action === 'Delete'){
-            deleteBranch(branchName)
+            deleteBranch(rootPath, branchName)
             console.log(`Action: ${action}, Branch Name: ${branchName}`);
         } else if(action === 'Rename'){
-            renameBranch(branchName, newBranchName)
+            renameBranch(rootPath, branchName, newBranchName)
             console.log(`Action: ${action}, Branch Name: ${branchName}, New Branch Name: ${newBranchName}`);
         } else if(action === 'Checkout'){
-            checkoutBranch(branchName)
+            checkoutBranch(rootPath, branchName)
             console.log(`Action: ${action}, Branch Name: ${branchName}`);
         }
 
