@@ -1,6 +1,9 @@
+const util = require('util');
 const git = require('isomorphic-git'); // importing Isomorpihic git.
 const fs = require('fs');
 const path = require('path');
+const readdir = util.promisify(fs.readdir);
+const stat = util.promisify(fs.stat);
 
 const color_Default = '#999999';
 const color_UnModified = ''
@@ -15,8 +18,6 @@ const color_Deleted_US = '#FFBDBD';
 const color_Added_S = '#00cc00';
 const color_Added_SUS = '#009900';
 const color_Untracked_US = '#99ff99';
-
-var gitEntries = [];
 
 
 async function del(file) {
@@ -36,10 +37,6 @@ async function rename(original, target) {
 
 
 const GitRename = async (rootPath, fileInfo, newName) => {
-    console.log('input rootP :', rootPath);
-    console.log('input fileInfo :', fileInfo);
-    console.log('input newName :', newName);
-
     const subDir = path.join(rootPath, '/');
     const gitPath = fileInfo[0].id.replace(rootPath, '');
     const targetPath = gitPath.replace(fileInfo[0].name, newName);
@@ -58,7 +55,7 @@ const GitRename = async (rootPath, fileInfo, newName) => {
 const GitDelete = async (rootPath, selectedFiles) => {
     const subDir = path.join(rootPath, '/');
     try {
-        const promises = selectedFiles.map(async (file) => {
+        const promises = selectedFiles.map(async(file) => {
             const gitPath = file.id.replace(rootPath, '');
             await git.remove({ fs, dir: rootPath, filepath: gitPath });
             del(gitPath);
@@ -74,11 +71,12 @@ const GitDelete = async (rootPath, selectedFiles) => {
 
 
 const GitUntrack = async (rootPath, selectedFiles) => {
+    console.log('from untrack',selectedFiles);
     const subDir = path.join(rootPath, '/');
     try {
-        const promises = selectedFiles.map(async (file) => {
+        const promises = selectedFiles.map((file) => {
             const gitPath = file.id.replace(rootPath, '');
-            await git.remove({ fs, dir: rootPath, filepath: gitPath });
+            return git.remove({ fs, dir: rootPath, filepath: gitPath });
         });
 
         await Promise.all(promises);
@@ -95,7 +93,6 @@ const GitRestore = async (rootPath, selectedFiles) => {
         const promises = selectedFiles.map(async (file) => {
             const gitPath = file.id.replace(rootPath, '');
             await git.checkout({ fs, dir: rootPath, force: true, filepaths: [gitPath] });
-            del(gitPath);
         });
 
         await Promise.all(promises);
@@ -109,6 +106,7 @@ const GitRestore = async (rootPath, selectedFiles) => {
 const checkGitStatus = async (rootPath, callback) => {
     let GitMatrix;
     let fileEntry;
+    const gitEntries = [];
     try {
         GitMatrix = await git.statusMatrix({ fs, dir: rootPath });
     } catch {
@@ -139,49 +137,60 @@ const checkGitStatus = async (rootPath, callback) => {
         }
         gitEntries.push(fileEntry);
     }
-    callback(null);
+    return gitEntries;
 };
 
 const readGitStatus = async (rootPath, currentPath, callback) => {
+    let gitEntries = [];
+    let resultMatrix = [];
+
     try {
-        await checkGitStatus(rootPath);
-    } catch {
-        console.log('something error in check git status');
+        gitEntries = await checkGitStatus(rootPath);
+    } catch(err) {
+        console.error('gitSpace loading error : ', err);
+        console.log(rootPath, currentPath);
     }
 
+    let gitEntriesSet = new Set(gitEntries.map(entry => path.join(rootPath, entry.id)));
+
+    for(let entry of gitEntries){
+        const absolutePath = path.join(rootPath, entry.id);
+        const dirname = path.dirname(absolutePath);
+
+        if(dirname === currentPath){
+            resultMatrix.push(entry);
+        }
+    }
+    
     try {
-        fs.readdir(currentPath, async (err, files) => {
-            const gitSpaceMatrix = files.map((file) => new Promise((resolve, reject) => {
-                const absolutePath = path.join(currentPath, file);
-                const subPath = path.join(rootPath, '/');
-                const gitFilePath = absolutePath.replace(subPath, '');
-                const searchedEntry = gitEntries.find(entry => entry.id === gitFilePath);
+        const files = await readdir(currentPath);
 
-                if (searchedEntry === undefined) {
-                    fs.stat(absolutePath, (err, stats) => {
-                        if (err) {
-                            console.error(err);
-                            reject(null);
-                        }
-                        if (stats.isDirectory()) {
-                            resolve({ id: absolutePath, name: file, isDir: true });
-                        } else {
-                            resolve({ id: gitFilePath, name: file, color: color_Default });
-                        }
-                    })
+        const gitSpaceMatrix = files.map(async (file) => {
+            const absolutePath = path.join(currentPath, file);
+            const gitFilePath = absolutePath.replace(rootPath + '/', '');
+
+            if (!gitEntriesSet.has(absolutePath)) {
+                const stats = await stat(absolutePath);
+
+                if (stats.isDirectory()) {
+                    return { id: absolutePath, name: file, isDir: true };
                 } else {
-                    resolve(searchedEntry);
+                    return { id: gitFilePath, name: file, color: color_Default };
                 }
-            }));
-
-            const resultMatrix = await Promise.all(gitSpaceMatrix);
-            callback(null, resultMatrix);
+            } else {
+                return null;
+            }
         });
 
+        const promiseMatrix = await Promise.all(gitSpaceMatrix);
+        const finalResultMatrix = resultMatrix.concat(promiseMatrix.filter(Boolean));
+        callback(null, finalResultMatrix);
+
     } catch (err) {
-        console.error(err);
+        console.error('readGit error :', err);
     }
 }
+
 
 const getCurrentBranch = async (rootPath) => {
     const branchname = await git.currentBranch({ fs, dir: rootPath, fullname: false });

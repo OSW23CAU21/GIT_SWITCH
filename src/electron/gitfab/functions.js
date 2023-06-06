@@ -27,8 +27,6 @@ const commitStatus = async (dir) => {
 };
 
 const gitCommit = async (rootPath, commitMessage, authorName, authorEmail) => {
-  console.log('committing : ', rootPath, typeof rootPath);
-  console.log('committing : ', rootPath.rootPath, typeof rootPath.rootPath);
   try {
     let sha = await git.commit({
       fs,

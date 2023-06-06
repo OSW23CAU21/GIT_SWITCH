@@ -108,11 +108,12 @@ const GitBrowser = ({ directoryPath, setDirectoryPath, folderChain }) => {
     const fileActions = [Untrack, Rename, Delete, Restore, ToStaged, ToUnStaged];
 
     useEffect(() => {
-        ipcRenderer.on('RefreshAll', (_) => {
-            setRefreshKey(refreshKey + 1);
+        ipcRenderer.on('Refresh_GM', (_) => {
+            console.log('GMRefreshing Firing up!');
+            setRefreshKey(prevRefreshKey => prevRefreshKey + 1);
         });
         return () => {
-            ipcRenderer.removeAllListeners('RefreshAll');
+            ipcRenderer.removeAllListeners('Refresh_GM');
         };
     }, [])
 
@@ -137,18 +138,21 @@ const GitBrowser = ({ directoryPath, setDirectoryPath, folderChain }) => {
             }
         }
         if (data.state.selectedFiles.length == 1 && !data.state.selectedFiles[0].isDir) {// means selected file exist & is not directory.
-            setSelectedFiles(data.state.selectedFiles);
             if (data.id === 'GitRename') {
+                setSelectedFiles(data.state.selectedFiles);
                 setRenameDialogOpen(true);
             }
         }
 
         if (data.state.selectedFiles.length > 0 && checkDirectoryExist(data.state.selectedFiles)) {
             if (data.id === 'GitRestore') {
+                setSelectedFiles(data.state.selectedFiles);
                 setRestoreDialogOpen(true);
             } else if (data.id === 'GitDelete') {
+                setSelectedFiles(data.state.selectedFiles);
                 setDeleteDialogOpen(true);
             } else if (data.id === 'Untrack') {
+                setSelectedFiles(data.state.selectedFiles);
                 setUntrackDialogOpen(true);
             }
         }

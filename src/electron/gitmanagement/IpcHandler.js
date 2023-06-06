@@ -23,7 +23,8 @@ ipcMain.handle('GM_branchName', async (event, rootPath) => {
 ipcMain.handle('GM_GitRename', async (event, rootPath, selectedFile, newName) => {
   const result = await GitRename(rootPath, selectedFile, newName);
   if (result == true) {
-    event.sender.send('RefreshAll');
+    event.sender.send('Refresh_SUS');
+    event.sender.send('Refresh_GM');
     return result;
   } else {
     return result;
@@ -33,7 +34,8 @@ ipcMain.handle('GM_GitRename', async (event, rootPath, selectedFile, newName) =>
 ipcMain.handle('GM_GitDelete', async (event, rootPath, selectedFiles) => {
   const result = await GitDelete(rootPath, selectedFiles);
   if (result == true) {
-    event.sender.send('RefreshAll');
+    event.sender.send('Refresh_SUS');
+    event.sender.send('Refresh_GM');
     return result;
   } else {
     return result;
@@ -43,7 +45,8 @@ ipcMain.handle('GM_GitDelete', async (event, rootPath, selectedFiles) => {
 ipcMain.handle('GM_GitRestore', async (event, rootPath, selectedFiles) => {
   const result = await GitRestore(rootPath, selectedFiles);
   if (result == true) {
-    event.sender.send('RefreshAll');
+    event.sender.send('Refresh_SUS');
+    event.sender.send('Refresh_GM');
     return result;
   } else {
     return result;
@@ -53,7 +56,8 @@ ipcMain.handle('GM_GitRestore', async (event, rootPath, selectedFiles) => {
 ipcMain.handle('GM_GitUntrack', async (event, rootPath, selectedFiles) => {
   const result = await GitUntrack(rootPath, selectedFiles);
   if (result == true) {
-    event.sender.send('RefreshAll');
+    event.sender.send('Refresh_SUS');
+    event.sender.send('Refresh_GM');
     return result;
   } else {
     return result;
