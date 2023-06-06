@@ -54,7 +54,7 @@ const ReadBranchName = async (rootPath) => {
 
 const FileManagement = () => {
     const [activeTab, setActiveTab] = useState(0);
-    const [directoryPath, setDirectoryPath] = useState('./');
+    const [directoryPath, setDirectoryPath] = useState('');
     const [folderChain, setFolderChain] = useState([]);
     const [rootFlag, setRootFlag] = useState(false);
 

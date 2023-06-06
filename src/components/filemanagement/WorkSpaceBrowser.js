@@ -24,6 +24,7 @@ const ReadDirectory = async (DirectoryPath) => {
 
 const FileBrowsers = ({ directoryPath, setDirectoryPath, folderChain }) => {
     const [files, setFiles] = useState([]);
+    const [refreshKey, setRefreshKey] = useState(0);
 
     const CreateFile = defineFileAction({
         id: 'CreateFile',
@@ -84,6 +85,15 @@ const FileBrowsers = ({ directoryPath, setDirectoryPath, folderChain }) => {
         }
     }, []);
 
+    useEffect(() => {
+        ipcRenderer.on('Refresh_FM', (_) => {
+            console.log('GMRefreshing Firing up!');
+            setRefreshKey(prevRefreshKey => prevRefreshKey + 1);
+        });
+        return () => {
+            ipcRenderer.removeAllListeners('Refresh_FM');
+        };
+    }, [])
 
 
     useEffect(() => {
