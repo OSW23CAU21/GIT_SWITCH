@@ -1,9 +1,6 @@
 const git = require('isomorphic-git'); // importing Isomorpihic git.
 const fs = require('fs');
 
-// git 저장소 경로 설정
-git.plugins.set('fs', fs);
-
 // branch 생성 함수
 async function createBranch(rootPath, branchName) {
     await git.branch({ fs, dir: rootPath, ref: branchName });
