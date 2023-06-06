@@ -53,6 +53,7 @@ const ReadBranchName = async (rootPath) => {
 }
 
 const FileManagement = () => {
+    const [refreshKey, setRefreshKey] = useState(0);
     const [activeTab, setActiveTab] = useState(0);
     const [directoryPath, setDirectoryPath] = useState('./');
     const [folderChain, setFolderChain] = useState([]);
@@ -60,7 +61,6 @@ const FileManagement = () => {
 
     useEffect(() => {
         ipcRenderer.on('RootPathChanged', (_, newRootPath) => {
-            console.log('newPath allocated : ', newRootPath);
             setRootFlag(true);
             setDirectoryPath(newRootPath);
         });
@@ -68,6 +68,15 @@ const FileManagement = () => {
             ipcRenderer.removeAllListeners('RootPathChanged');
         };
     }, []);
+
+    useEffect(() => {
+        ipcRenderer.on('RefreshAll', (_) => {
+            setRefreshKey(refreshKey + 1);
+        });
+        return () => {
+            ipcRenderer.removeAllListeners('RefreshAll');
+        };
+    }, [])
 
 
     useEffect(() => {
@@ -85,7 +94,7 @@ const FileManagement = () => {
                 }
             });
         });
-    }, [directoryPath]);
+    }, [directoryPath, refreshKey]);
 
 
     const switchTabs = async () => {

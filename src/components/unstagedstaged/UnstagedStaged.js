@@ -29,6 +29,15 @@ const UnstagedStaged = () => {
     };
   }, []);
 
+  useEffect(() => {
+    ipcRenderer.on('RefreshAll', (_) => {
+        refresh();
+    });
+    return () => {
+        ipcRenderer.removeAllListeners('RefreshAll');
+    };
+}, [])
+
 
   useEffect(() => {
     getDirInfo(rootPath, (contents) => {

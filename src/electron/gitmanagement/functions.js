@@ -19,6 +19,93 @@ const color_Untracked_US = '#99ff99';
 var gitEntries = [];
 
 
+async function del(file) {
+    fs.unlink(file, function (err) {
+        if (err) {
+            console.log("Error : ", err)
+        }
+    })
+};
+
+async function rename(original, target) {
+    fs.rename(original, target, function (err) {
+        if (err) throw err;
+        console.log('File Renamed!');
+    });
+};
+
+
+const GitRename = async (rootPath, fileInfo, newName) => {
+    console.log('input rootP :', rootPath);
+    console.log('input fileInfo :', fileInfo);
+    console.log('input newName :', newName);
+
+    const subDir = path.join(rootPath, '/');
+    const gitPath = fileInfo[0].id.replace(rootPath, '');
+    const targetPath = gitPath.replace(fileInfo[0].name, newName);
+
+    try {
+        await git.remove({ fs, dir: rootPath, filepath: gitPath });
+        rename(path.join(subDir, gitPath), path.join(subDir, targetPath));
+        await git.add({ fs, dir: rootPath, filepath: targetPath });
+        return true;
+    } catch (error) {
+        console.error('Error: ', error);
+        return false;
+    }
+};
+
+const GitDelete = async (rootPath, selectedFiles) => {
+    const subDir = path.join(rootPath, '/');
+    try {
+        const promises = selectedFiles.map(async (file) => {
+            const gitPath = file.id.replace(rootPath, '');
+            await git.remove({ fs, dir: rootPath, filepath: gitPath });
+            del(gitPath);
+        });
+
+        await Promise.all(promises);
+        return true;
+    } catch (error) {
+        console.error('Error: ', error);
+        return false;
+    }
+};
+
+
+const GitUntrack = async (rootPath, selectedFiles) => {
+    const subDir = path.join(rootPath, '/');
+    try {
+        const promises = selectedFiles.map(async (file) => {
+            const gitPath = file.id.replace(rootPath, '');
+            await git.remove({ fs, dir: rootPath, filepath: gitPath });
+        });
+
+        await Promise.all(promises);
+        return true;
+    } catch (error) {
+        console.error('Error: ', error);
+        return false;
+    }
+};
+
+const GitRestore = async (rootPath, selectedFiles) => {
+    const subDir = path.join(rootPath, '/');
+    try {
+        const promises = selectedFiles.map(async (file) => {
+            const gitPath = file.id.replace(rootPath, '');
+            await git.checkout({ fs, dir: rootPath, force: true, filepaths: [gitPath] });
+            del(gitPath);
+        });
+
+        await Promise.all(promises);
+        return true;
+    } catch (error) {
+        console.error('Error: ', error);
+        return false;
+    }
+};
+
 const checkGitStatus = async (rootPath, callback) => {
     let GitMatrix;
     let fileEntry;
@@ -56,13 +143,10 @@ const checkGitStatus = async (rootPath, callback) => {
 };
 
 const readGitStatus = async (rootPath, currentPath, callback) => {
-    console.log('gitEntries : ', gitEntries);
-    if (gitEntries.length == 0) {
-        try {
-            await checkGitStatus(rootPath);
-        } catch {
-            console.log('something error in check git status');
-        }
+    try {
+        await checkGitStatus(rootPath);
+    } catch {
+        console.log('something error in check git status');
     }
 
     try {
@@ -79,7 +163,6 @@ const readGitStatus = async (rootPath, currentPath, callback) => {
                             console.error(err);
                             reject(null);
                         }
-                        console.log('resolving, ', file, 'from ', absolutePath);
                         if (stats.isDirectory()) {
                             resolve({ id: absolutePath, name: file, isDir: true });
                         } else {
@@ -100,10 +183,10 @@ const readGitStatus = async (rootPath, currentPath, callback) => {
     }
 }
 
-const getCurrentBranch = async (rootPath) =>{
-    const branchname = await git.currentBranch({fs, dir : rootPath, fullname : false});
+const getCurrentBranch = async (rootPath) => {
+    const branchname = await git.currentBranch({ fs, dir: rootPath, fullname: false });
 
     return branchname;
 }
 
-module.exports = { readGitStatus , getCurrentBranch};
+module.exports = { readGitStatus, getCurrentBranch, GitDelete, GitRename, GitRestore, GitUntrack };
