@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import react from 'react';
 import CommitFab from './CommitFab';
-import PullFab from './PullFab';
-import PushFab from './PushFab';
+import MergeFab from './MergeFab';
+import BranchFab from './BranchFab';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -19,8 +19,8 @@ const GitFab = () => {
 
     return (
         <div>
-            <PullFab />
-            <PushFab />
+            <MergeFab />
+            <BranchFab />
             <CommitFab rootPath = {rootPath}/>
         </div>
     );

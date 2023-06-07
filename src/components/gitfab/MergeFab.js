@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Fab, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, List, ListItem } from '@mui/material';
-import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+import MergeIcon from '@mui/icons-material/MergeTypeOutlined';
 import {styled} from '@mui/system';
 
 const StyledFab = styled(Fab)(({ theme }) => ({
@@ -14,7 +14,7 @@ const StyledFab = styled(Fab)(({ theme }) => ({
     },
   }));
 
-const PullFab = () => {
+const MergeFab = () => {
     
     const buttonClick = () => {
         console.log('fab pull');
@@ -23,10 +23,10 @@ const PullFab = () => {
     return (
         <div>
             <StyledFab aria-label="switch" onClick={buttonClick}>
-                <CloudDownloadIcon />
+                <MergeIcon />
             </StyledFab>
         </div>
     );
 }
 
-export default PullFab;
+export default MergeFab;
