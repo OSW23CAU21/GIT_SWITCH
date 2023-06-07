@@ -95,26 +95,20 @@ Console창 Commit log
 조현우
 - MacOS Apple M1 Max Ventura 13.1
 
-## History
-
-### About gitStatus between Staged/Unstaged.(05/09)
-1. 현재 디렉토리에서, 변경된파일, Staged, unstaged 된 파일을 구별하여 인자값으로 US/S components에 전달합니다. 
-2. 전달양식은 다음과 같습니다 f_DirStat[{name : "깃 파일 이름", staged : 참 또는 거짓, status : "modified or untracked"}, {다른 파일 정보}]
-3. 참고로 f_DirStat의 f는 filtered를 의미합니다. .폴더(숨김처리된), unmodified는 필터링을 거치기 때문에 정보가 올라가지 않습니다. 
-4. 테스트이전에 꼭 main.js상단의 var AbsPath를 자신의 폴더 값으로 변경해주세요.
-
-### About gitModify between staged/Unstaged. (05/10)
-1. "선택한 파일 이동하기"를 누르면 staged, unstaged 상태에 따라 git 명령어가 실행됩니다. 
-2. unstaged 에서 파일을 선택한 후 이동하기를 누르면 해당 파일에 대해 "git add" 실행
-3. staged 에서 파일을 선택한 후 이동하기를 누르면 해당 파일에 대해 "git restore --staged"를 실행.
+## Bugs. 
+1. when you set Base directory in Git space, BaseName is not branch name. 
+2. when you executes files in workspace sometimes it not opens properly. (getting .id error). 
 
 
-### Remaining issue (05/12)
-1. main.js, 백엔드 조금 더 깔끔하게 동작해야할 필요성 있음.
-
-### 경로작업.
-1. 모든 경로를 절대 경로로 처리하도록 수정하였습니다. 
-2. setDir버튼으로 Root 또는 Base가 될 폴더를 선택할 수 있습니다.
-3. S/US에서 git 파일 전체를 보여주기로 함에 따라, f_DirStat내부의 4번째 요소인 gitName을 삭제하고 name으로 대체하였습니다.
-4. 코드 내부에서 경로 값이 조금 더 잘 이해가 되도록, 변수 이름을 바꾸거나, 각주를 달았습니다.
+## for future supports. 
+1. Developing WorkSpace File actions (Rename, Delete, CreateFile, CreateFolders)
+2. Developing Gitspace File Actions (To Unstaged, To Staged)
+3. Adding Git Inits to Switch Fab button following under conditions. 
+    - when Base folder is not managed by git, must be plus Iconn (not apple or github)
+    - when you clicks + buttons git Initiation will be executed. (same as create .git)
+4. Switching three fab buttons by Switch Fab conditions. 
+    - If we are in workspace User will access Three buttons (git_clone, branch managing, refresh) ## is MVP
+    - If we are in gitspace User will accces Three buttons (commit, gitPush, gitPull) ## not MVP
+5. saving User Infos by Encryption (folderchain, base's rootpath, Author name, Author email, access token to github)
+6. loading User Infos by decryption
 
