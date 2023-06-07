@@ -112,3 +112,14 @@ Console창 Commit log
 5. saving User Infos by Encryption (folderchain, base's rootpath, Author name, Author email, access token to github)
 6. loading User Infos by decryption
 
+
+## Prerequsite. 
+react
+node.js
+electron
+
+@mui/material (for dialogs, buttons, and UIs)
+@chonky fileexplorer (for file explorers)
+@chonky chonky-icon-fontawesome (for icons)
+@diff (for getting diff)
+@electron-store (for storing data with encryptions)
