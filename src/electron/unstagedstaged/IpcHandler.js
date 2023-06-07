@@ -24,3 +24,4 @@ ipcMain.handle('SUS_GitAdd', async (event, SelectedFiles, length) => {
     return result;
   }
 });
+

@@ -87,7 +87,6 @@ const FileBrowsers = ({ directoryPath, setDirectoryPath, folderChain }) => {
 
     useEffect(() => {
         ipcRenderer.on('Refresh_FM', (_) => {
-            console.log('GMRefreshing Firing up!');
             setRefreshKey(prevRefreshKey => prevRefreshKey + 1);
         });
         return () => {
