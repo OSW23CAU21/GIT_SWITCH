@@ -68,6 +68,16 @@ const FileManagement = () => {
         };
     }, []);
 
+    useEffect(() => {
+        async function fetchBasePath() {
+          const basePath = await ipcRenderer.invoke('SD_callpath');
+          setRootFlag(true);
+          setDirectoryPath(basePath);
+        }
+    
+        fetchBasePath();
+      }, []);
+
 
     useEffect(() => {
         ReadBaseName(directoryPath).then(fetchedName => {
