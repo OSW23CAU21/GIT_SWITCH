@@ -1,12 +1,7 @@
-//Todo, gitspace by tab
-// please display "branch name" at tap name not gitspace
-// please display "branch's sha" at folderchain's base name. 
-// you can easily add git space tab by clicking '+' button. 
-// if workspace is not managed by git, when you click '+' git will be initiate your work space.
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { FileNavbar, FileToolbar, FileList, FileContextMenu, FileBrowser, ChonkyActions, defineFileAction, ChonkyIconName } from "chonky";
 import { RenameDialog, DeleteDialog, RestoreDialog, UntrackDialog } from './ManageDialog';
+import DiffDialog from './DiffDialog';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -43,6 +38,8 @@ const GitBrowser = ({ directoryPath, setDirectoryPath, folderChain }) => {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [untrackDialogOpen, setUntrackDialogOpen] = useState(false);
     const [restoreDialogOpen, setRestoreDialogOpen] = useState(false);
+    const [diffDialogOpen, setDiffDialogOpen] = useState(false);
+    const [diffResult, setDiffResult] = useState("");
     const [selectedFiles, setSelectedFiles] = useState([]);
 
     const Untrack = defineFileAction({
@@ -109,7 +106,6 @@ const GitBrowser = ({ directoryPath, setDirectoryPath, folderChain }) => {
 
     useEffect(() => {
         ipcRenderer.on('Refresh_GM', (_) => {
-            console.log('GMRefreshing Firing up!');
             setRefreshKey(prevRefreshKey => prevRefreshKey + 1);
         });
         return () => {
@@ -127,6 +123,15 @@ const GitBrowser = ({ directoryPath, setDirectoryPath, folderChain }) => {
         });
     }, [directoryPath, refreshKey]);
 
+    const handleOpen = async (targetId) => {
+        let result = await ipcRenderer.invoke('GD_readDiff', folderChain[0].id, targetId);
+        setDiffResult(result);
+        setSelectedFiles(targetId);
+        console.log(result);
+        setDiffDialogOpen(true);
+      }
+      
+
     const handleGitFileAction = useCallback((data) => {
         if (data.id === ChonkyActions.OpenFiles.id) {
             if (data.payload.files && data.payload.files.length !== 1) return;
@@ -134,7 +139,7 @@ const GitBrowser = ({ directoryPath, setDirectoryPath, folderChain }) => {
             if (data.payload.targetFile.isDir) {
                 setDirectoryPath(data.payload.targetFile.id);
             } else {
-                console.log('execute diff');
+                handleOpen(data.payload.targetFile.id);
             }
         }
         if (data.state.selectedFiles.length == 1 && !data.state.selectedFiles[0].isDir) {// means selected file exist & is not directory.
@@ -206,6 +211,12 @@ const GitBrowser = ({ directoryPath, setDirectoryPath, folderChain }) => {
                     ipcRenderer.invoke('GM_GitUntrack', folderChain[0].id, selectedFiles);
                     setUntrackDialogOpen(false);
                 }}
+            />
+            <DiffDialog
+                open={diffDialogOpen}
+                handleClose={() => setDiffDialogOpen(false)}
+                diffResult={diffResult}
+                filePath={selectedFiles}
             />
         </div>
     );

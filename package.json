@@ -14,6 +14,7 @@
     "@types/react": "^18.2.0",
     "chonky": "^2.3.2",
     "chonky-icon-fontawesome": "^2.3.2",
+    "diff": "^5.1.0",
     "electron-log": "^4.4.8",
     "fs": "^0.0.1-security",
     "ignore": "^5.2.4",

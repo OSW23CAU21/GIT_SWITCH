@@ -4,6 +4,7 @@ require('./electron/filemanagement/IpcHandler'); // GUI 파일매니저 이벤�
 require('./electron/gitmanagement/IpcHandler'); // GUI 깃매니저 이벤트 핸들러
 require('./electron/unstagedstaged/IpcHandler'); // S/US 파일매니저 이벤트 핸들러
 require('./electron/gitfab/IpcHandler'); //Git FAB 이벤트 핸들러
+require('./electron/gitdiff/IpcHandler'); // git diff 이벤트 핸들러
 
 let win;
 
