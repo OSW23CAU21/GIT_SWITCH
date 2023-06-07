@@ -1,9 +1,3 @@
-//Todo, gitspace by tab
-// please display "branch name" at tap name not gitspace
-// please display "branch's sha" at folderchain's base name. 
-// you can easily add git space tab by clicking '+' button. 
-// if workspace is not managed by git, when you click '+' git will be initiate your work space.
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { FileNavbar, FileToolbar, FileList, FileContextMenu, FileBrowser, ChonkyActions, defineFileAction, ChonkyIconName } from "chonky";
 import { RenameDialog, DeleteDialog, RestoreDialog, UntrackDialog } from './ManageDialog';
