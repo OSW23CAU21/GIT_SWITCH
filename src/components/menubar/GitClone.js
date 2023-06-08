@@ -38,11 +38,16 @@ export const GitCloneDialog = ({ open, handleClose }) => {
 
     const handleClone = async () => {
         setLoading(true);
-        await gitClone(gitUrl, gitToken);
         await saveTokens(gitToken);
+        const result = await gitClone(gitUrl, gitToken);
         setLoading(false);
         handleClose();
-        window.location.reload();
+        if (result.result){
+            window.location.reload();
+        }else{
+            setErrorMessage(result.message);
+            setOpenSnackbar(true);
+        }
     };
 
     const handleClickShowPassword = () => {

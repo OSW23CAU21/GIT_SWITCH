@@ -12,8 +12,8 @@ async function storeToken(accessToken) {
 
 async function storeAuthor(authorName, authorEmail) {
     const AuthorInfo = {
-        Name: authorName,
-        Email: authorEmail,
+        name: authorName,
+        email: authorEmail,
     };
 
     storage.set('AuthorInfo', AuthorInfo);
@@ -21,7 +21,6 @@ async function storeAuthor(authorName, authorEmail) {
 
 async function callPath() {
     let loadedpath = storage.get('BasePath');
-    console.log('loaded', loadedpath);
     if (loadedpath != undefined) {
         return loadedpath;
     } else {
@@ -38,4 +37,13 @@ async function callToken(){
     }
 }
 
-module.exports = { storePath, callPath, storeToken, callToken, storeAuthor };
+async function callAuthor() {
+    let AuthorInfo = storage.get('AuthorInfo');
+    if (AuthorInfo != undefined) {
+        return AuthorInfo;
+    } else {
+        return {name: '', email: ''};
+    }
+}
+
+module.exports = { storePath, callPath, storeToken, callToken, storeAuthor, callAuthor };
