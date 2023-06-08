@@ -29,7 +29,7 @@ const FileStatusList = ({status, filePaths}) => {
     );
 };
 
-const CommitFab = (rootPath) => {
+const CommitFab = () => {
     const [commitDialogOpen, setCommitDialogOpen] = useState(false);
     const [commitMessage, setCommitMessage] = useState("");
     const [authorName, setAuthorName] = useState("");
@@ -48,7 +48,7 @@ const CommitFab = (rootPath) => {
         const authorNme = authorName || 'undefined author';
         const authorEml = authorEmail || 'undefined@author.com';
 
-        await ipcRenderer.invoke('GF_gitCommitConfirm', rootPath, commitMsg, authorNme, authorEml);
+        await ipcRenderer.invoke('GF_gitCommitConfirm', commitMsg, authorNme, authorEml);
         setCommitDialogOpen(false);
     }
 

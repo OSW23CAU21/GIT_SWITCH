@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, TextField, IconButton, InputAdornment, OutlinedInput, FormControl, InputLabel, Button } from '@mui/material';
+import { Alert, Snackbar } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { styled } from '@mui/system';
@@ -22,6 +23,8 @@ export const GitCloneDialog = ({ open, handleClose }) => {
     const [gitUrl, setGitUrl] = useState('');
     const [gitToken, setGitToken] = useState('');
     const [showAccessToken, setShowAccessToken] = useState(false);
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
         async function getTokens() {
@@ -48,6 +51,13 @@ export const GitCloneDialog = ({ open, handleClose }) => {
 
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
+    };
+
+    const handleCloseSnackbar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpenSnackbar(false);
     };
 
     return (
@@ -97,6 +107,11 @@ export const GitCloneDialog = ({ open, handleClose }) => {
                         )}</Button>
                 </DialogActions>
             </Dialog>
+            <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+                <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
+                    {errorMessage}
+                </Alert>
+            </Snackbar>
         </div>
     );
 };

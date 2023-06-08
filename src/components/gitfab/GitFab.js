@@ -8,22 +8,12 @@ import RefreshFab from './RefreshFab';
 const { ipcRenderer } = window.require('electron');
 
 const GitFab = () => {
-    const [rootPath, setRootPath] = useState('');
-    useEffect(() => {
-        ipcRenderer.on('RootPathChanged', (_, newRootPath) => {
-            setRootPath(newRootPath);
-        });
-        return () => {
-            ipcRenderer.removeAllListeners('RootPathChanged');
-        };
-    }, []);
-
     return (
         <div>
             <RefreshFab />
             <MergeFab />
             <BranchFab />
-            <CommitFab rootPath = {rootPath}/>
+            <CommitFab />
         </div>
     );
 }

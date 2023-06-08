@@ -2,12 +2,12 @@ const { ipcMain } = require('electron');
 const { commitStatus, gitCommit, gitClone } = require('./functions');
 
 ipcMain.handle('GF_gitCommitTry', async (event) => {
-    return await commitStatus('./');
+    return await commitStatus();
 });
 
 
-ipcMain.handle('GF_gitCommitConfirm', async (event, rootPath, commitMessage, authorName, authorEmail) => {
-    const result = await gitCommit(rootPath, commitMessage, authorName, authorEmail);
+ipcMain.handle('GF_gitCommitConfirm', async (event, commitMessage, authorName, authorEmail) => {
+    const result = await gitCommit(commitMessage, authorName, authorEmail);
     if (result == true) {
         event.sender.send('Refresh_SUS');
         event.sender.send('Refresh_GM');

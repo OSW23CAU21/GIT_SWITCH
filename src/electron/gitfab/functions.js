@@ -5,8 +5,8 @@ const Store = require('electron-store');
 
 const storage = new Store;
 
-const commitStatus = async (dir) => {
-  const matrix = await git.statusMatrix({ fs, dir });
+const commitStatus = async () => {
+  const matrix = await git.statusMatrix({ fs, dir : storage.get('BasePath')});
 
   const status = {
     new: [],
@@ -30,11 +30,11 @@ const commitStatus = async (dir) => {
   return status;
 };
 
-const gitCommit = async (rootPath, commitMessage, authorName, authorEmail) => {
+const gitCommit = async (commitMessage, authorName, authorEmail) => {
   try {
     let sha = await git.commit({
       fs,
-      dir: rootPath.rootPath,
+      dir: storage.get('BasePath'),
       author: {
         name: authorName,
         email: authorEmail
@@ -60,18 +60,10 @@ async function gitClone(githuburl, accessToken) {
         corsProxy: 'https://cors.isomorphic-git.org',
         url: githuburl,
         onAuth: () => ({ username: accessToken }),
-        onProgress: (progress) => {
-          console.log(progress);
-        },
-        onMessage: (message) => {
-          console.log(message);
-        },
       });
-      console.log(`Cloned ${githuburl} successfully`);
-      resolve(true);
+      resolve({result : true, message : `Cloned ${githuburl} successfully`});
     } catch (err) {
-      console.error(`Error during clone: ${err.message}`);
-      reject(false);
+      resolve({result : false, message : `Error during clone: ${err.message}`});
     }
   });
 }
