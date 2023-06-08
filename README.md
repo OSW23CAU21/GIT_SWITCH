@@ -1,5 +1,4 @@
 ## OSW23CAU21 
-./
 ### 팀원
 
 | 학번       | 이름   |
@@ -98,6 +97,9 @@ Console창 Commit log
 ## Bugs. 
 1. when you set Base directory in Git space, BaseName is not branch name. 
 2. when you executes files in workspace sometimes it not opens properly. (getting .id error). 
+3. when you opening added file to see git diff, error occurs 
+-> solved by changing 'added', 'untracking' files openable status to false 
+-> We think alert to when user try to open new files in git space
 
 
 ## for future supports. 

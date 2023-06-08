@@ -29,4 +29,13 @@ async function callPath() {
     }
 }
 
-module.exports = { storePath, callPath, storeToken, storeAuthor };
+async function callToken(){
+    let token = storage.get('Token');
+    if (token != undefined) {
+        return token;
+    } else {
+        return '';
+    }
+}
+
+module.exports = { storePath, callPath, storeToken, callToken, storeAuthor };

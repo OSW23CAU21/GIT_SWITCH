@@ -1,4 +1,4 @@
-const {storeAuthor, storePath, callPath, storeToken} = require('./Functions');
+const {storeAuthor, storePath, callPath, storeToken, callToken} = require('./Functions');
 const {ipcMain} = require('electron');
 
 ipcMain.handle('SD_storepath', async (event, rootPath) => {
@@ -15,6 +15,10 @@ ipcMain.handle('SD_storeauthor', async (event, name, email) => {
 
 ipcMain.handle('SD_callpath', async (event) => {
     const rootPath = await callPath();
-    console.log('returning', rootPath, typeof rootPath);
     return rootPath;
+});
+
+ipcMain.handle('SD_calltoken', async (event) => {
+    const token = await callToken();
+    return token;
 });
