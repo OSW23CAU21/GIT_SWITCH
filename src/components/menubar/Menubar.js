@@ -1,5 +1,4 @@
 // Todo.
-// Git clone 완성하기. 
 // Git merge 완성하기. 
 // alert 달기. 
 // work space 완성하기.
