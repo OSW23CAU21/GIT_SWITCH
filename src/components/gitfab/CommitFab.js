@@ -61,6 +61,7 @@ const CommitFab = () => {
         const authorEml = authorEmail || 'undefined@author.com';
 
         await ipcRenderer.invoke('GF_gitCommitConfirm', commitMsg, authorNme, authorEml);
+        setCommitMessage('');
         setCommitDialogOpen(false);
     }
 
