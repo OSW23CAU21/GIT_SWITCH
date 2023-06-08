@@ -1,5 +1,4 @@
 // Todo.
-// Git clone 완성하기. 
 // Git merge 완성하기. 
 // alert 달기. 
 // work space 완성하기.
@@ -14,7 +13,9 @@ import Box from '@mui/material/Box';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import AddIcon from '@mui/icons-material/Add';
+import SettingsIcon from '@mui/icons-material/Settings';
 import { GitCloneDialog } from './GitClone';
+import { SettingsDialog } from './Store';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -46,6 +47,7 @@ const theme = createTheme({
 
 const Menubar = () => {
   const [openGitClone, setOpenGitClone] = useState(false);
+  const [openSettings, setOpenSettings] = useState(false);
 
   const setDirButtonClick = async () => {
     const rootPath = await ipcRenderer.invoke('MB_getRoot');
@@ -54,6 +56,10 @@ const Menubar = () => {
 
   const gitCloneButtonClick = async () => {
     setOpenGitClone(true);
+  }
+
+  const SettingsButtonClick = async () => {
+    setOpenSettings(true);
   }
 
 
@@ -71,6 +77,7 @@ const Menubar = () => {
                 <Button startIcon={<AddIcon />} onClick={gitCloneButtonClick}>
                   Git Clone
                 </Button>
+                <Button startIcon={<SettingsIcon />} onClick={SettingsButtonClick} style={{ paddingRight: 0 }} />
               </ButtonGroup>
             </Box>
           </Toolbar>
@@ -78,7 +85,10 @@ const Menubar = () => {
       </ThemeProvider>
       <GitCloneDialog
         open={openGitClone}
-        handleClose={() => setOpenGitClone(false)}/>
+        handleClose={() => setOpenGitClone(false)} />
+      <SettingsDialog
+        open={openSettings}
+        handleClose={() => setOpenSettings(false)} />
     </div>
   );
 };
