@@ -31,12 +31,23 @@ const UnstagedStaged = () => {
 
   useEffect(() => {
     ipcRenderer.on('Refresh_SUS', (_) => {
-        refresh();
+      refresh();
     });
     return () => {
-        ipcRenderer.removeAllListeners('Refresh_SUS');
+      ipcRenderer.removeAllListeners('Refresh_SUS');
     };
-}, [])
+  }, [])
+
+  useEffect(() => {
+    async function fetchBasePath() {
+      const basePath = await ipcRenderer.invoke('SD_callpath');
+      setRootPath(basePath);
+    }
+
+    fetchBasePath();
+  }, []);
+
+
 
 
   useEffect(() => {

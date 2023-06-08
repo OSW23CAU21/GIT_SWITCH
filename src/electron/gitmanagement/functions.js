@@ -71,7 +71,7 @@ const GitDelete = async (rootPath, selectedFiles) => {
 
 
 const GitUntrack = async (rootPath, selectedFiles) => {
-    console.log('from untrack',selectedFiles);
+    console.log('from untrack', selectedFiles);
     const subDir = path.join(rootPath, '/');
     try {
         const promises = selectedFiles.map((file) => {
@@ -114,7 +114,7 @@ const checkGitStatus = async (rootPath, callback) => {
     }
     for (const [filePath, HeadStatus, WorkdirStatus, StageStatus] of GitMatrix) {
         if (HeadStatus === 0 && WorkdirStatus === 2) { // untracked, added
-            fileEntry = { id: filePath, name: path.basename(filePath), color: color_Untracked_US };
+            fileEntry = { id: filePath, name: path.basename(filePath), color: color_Untracked_US, openable : false };
             if (StageStatus === 2) {
                 fileEntry.color = color_Added_S
             } else if (StageStatus === 3) {

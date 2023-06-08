@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Fab, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, List, ListItem } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import {styled} from '@mui/system';
@@ -29,12 +29,23 @@ const FileStatusList = ({status, filePaths}) => {
     );
 };
 
-const CommitFab = (rootPath) => {
+const CommitFab = () => {
     const [commitDialogOpen, setCommitDialogOpen] = useState(false);
     const [commitMessage, setCommitMessage] = useState("");
     const [authorName, setAuthorName] = useState("");
     const [authorEmail, setAuthorEmail] = useState("");
     const [commitStatus, setcommitStatus] = useState("null");
+
+    useEffect(() => {
+        async function getAuthor() {
+            const Author = await ipcRenderer.invoke('SD_callauthor');
+            setAuthorName(Author.name);
+            setAuthorEmail(Author.email);
+            return Author;
+        }
+
+        getAuthor();
+    }, []);
 
     const commitButtonClick = async () => {
         const gitInfo = await ipcRenderer.invoke('GF_gitCommitTry');
@@ -44,11 +55,13 @@ const CommitFab = (rootPath) => {
 
 
     const handleCommit = async () => {
+        await ipcRenderer.invoke('SD_storeauthor', authorName, authorEmail);
         const commitMsg = commitMessage || 'undefined commit';
         const authorNme = authorName || 'undefined author';
         const authorEml = authorEmail || 'undefined@author.com';
 
-        await ipcRenderer.invoke('GF_gitCommitConfirm', rootPath, commitMsg, authorNme, authorEml);
+        await ipcRenderer.invoke('GF_gitCommitConfirm', commitMsg, authorNme, authorEml);
+        setCommitMessage('');
         setCommitDialogOpen(false);
     }
 

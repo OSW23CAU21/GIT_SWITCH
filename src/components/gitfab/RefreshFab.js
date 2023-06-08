@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { Fab, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, List, ListItem } from '@mui/material';
-import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+import RefreshIcon from '@mui/icons-material/RefreshOutlined';
 import {styled} from '@mui/system';
 
 const StyledFab = styled(Fab)(({ theme }) => ({
     position: 'fixed', 
-    bottom: theme.spacing(26), 
+    bottom: theme.spacing(34), 
     right: theme.spacing(2), 
     color: '#0086FF',
     backgroundColor: '#FFFFFF', 
@@ -14,19 +14,21 @@ const StyledFab = styled(Fab)(({ theme }) => ({
     },
   }));
 
-const PullFab = () => {
-    
+
+const RefreshFab = () => {
+
     const buttonClick = () => {
-        console.log('fab pull');
+        window.location.reload();
     }
- 
+
     return (
         <div>
             <StyledFab aria-label="switch" onClick={buttonClick}>
-                <CloudDownloadIcon />
+                <RefreshIcon />
             </StyledFab>
         </div>
     );
 }
 
-export default PullFab;
+
+export default RefreshFab;

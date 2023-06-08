@@ -129,10 +129,11 @@ const GitBrowser = ({ directoryPath, setDirectoryPath, folderChain }) => {
         setSelectedFiles(targetId);
         console.log(result);
         setDiffDialogOpen(true);
-      }
-      
+    }
+
 
     const handleGitFileAction = useCallback((data) => {
+        console.log(data);
         if (data.id === ChonkyActions.OpenFiles.id) {
             if (data.payload.files && data.payload.files.length !== 1) return;
             //if (!data.payload.targetFile) return;

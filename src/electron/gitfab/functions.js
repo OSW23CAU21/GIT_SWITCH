@@ -1,8 +1,12 @@
 const git = require('isomorphic-git'); // importing Isomorpihic git.
+const http = require('isomorphic-git/http/node');
 const fs = require('fs');
+const Store = require('electron-store');
 
-const commitStatus = async (dir) => {
-  const matrix = await git.statusMatrix({ fs, dir });
+const storage = new Store;
+
+const commitStatus = async () => {
+  const matrix = await git.statusMatrix({ fs, dir : storage.get('BasePath')});
 
   const status = {
     new: [],
@@ -26,11 +30,11 @@ const commitStatus = async (dir) => {
   return status;
 };
 
-const gitCommit = async (rootPath, commitMessage, authorName, authorEmail) => {
+const gitCommit = async (commitMessage, authorName, authorEmail) => {
   try {
     let sha = await git.commit({
       fs,
-      dir: rootPath.rootPath,
+      dir: storage.get('BasePath'),
       author: {
         name: authorName,
         email: authorEmail
@@ -45,4 +49,23 @@ const gitCommit = async (rootPath, commitMessage, authorName, authorEmail) => {
   }
 };
 
-module.exports = { commitStatus, gitCommit };
+
+async function gitClone(githuburl, accessToken) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await git.clone({
+        fs,
+        http,
+        dir:  storage.get('BasePath'),
+        corsProxy: 'https://cors.isomorphic-git.org',
+        url: githuburl,
+        onAuth: () => ({ username: accessToken }),
+      });
+      resolve({result : true, message : `Cloned ${githuburl} successfully`});
+    } catch (err) {
+      resolve({result : false, message : `Error during clone: ${err.message}`});
+    }
+  });
+}
+
+module.exports = { commitStatus, gitCommit, gitClone };

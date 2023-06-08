@@ -1,27 +1,19 @@
 import { useState, useEffect } from 'react';
 import react from 'react';
 import CommitFab from './CommitFab';
-import PullFab from './PullFab';
-import PushFab from './PushFab';
+import MergeFab from './MergeFab';
+import BranchFab from './BranchFab';
+import RefreshFab from './RefreshFab';
 
 const { ipcRenderer } = window.require('electron');
 
 const GitFab = () => {
-    const [rootPath, setRootPath] = useState('');
-    useEffect(() => {
-        ipcRenderer.on('RootPathChanged', (_, newRootPath) => {
-            setRootPath(newRootPath);
-        });
-        return () => {
-            ipcRenderer.removeAllListeners('RootPathChanged');
-        };
-    }, []);
-
     return (
         <div>
-            <PullFab />
-            <PushFab />
-            <CommitFab rootPath = {rootPath}/>
+            <RefreshFab />
+            <MergeFab />
+            <BranchFab />
+            <CommitFab />
         </div>
     );
 }

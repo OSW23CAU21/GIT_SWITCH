@@ -16,6 +16,7 @@
     "chonky-icon-fontawesome": "^2.3.2",
     "diff": "^5.1.0",
     "electron-log": "^4.4.8",
+    "electron-store": "^8.1.0",
     "fs": "^0.0.1-security",
     "ignore": "^5.2.4",
     "isomorphic-git": "^1.23.0",
