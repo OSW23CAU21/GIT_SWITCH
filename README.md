@@ -1,5 +1,6 @@
 ## OSW23CAU21 
-### 팀원
+
+## 🧑‍🤝‍🧑 Members
 
 | 학번       | 이름   |
 |----------| ------ |
@@ -8,9 +9,15 @@
 | 20172861 | 김재민 |
 | 20165545 | 조현우 |
 
+## 🕰️ Project duration
+
+ * May 8 ~ June 12
+
+
 ## Version
 
 ```
+ <img src="https://img.shields.io/badge/Electron-#47848F?style=flat&logo=electron&logoColor=white"/>
 electron 
 
 ```
