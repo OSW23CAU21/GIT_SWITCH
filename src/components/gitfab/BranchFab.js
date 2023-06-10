@@ -1,179 +1,183 @@
 import { useState } from 'react';
-import { Fab, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, List, ListItem } from '@mui/material';
-import BranchIcon from '@mui/icons-material/SchemaRounded';
-import {styled} from '@mui/system';
-import React, {useEffect} from "react";
+import { Fab, Snackbar, Alert, Slide } from '@mui/material';
+import BranchIcon from '@mui/icons-material/AltRoute';
+import { styled } from '@mui/system';
+import React, { useEffect } from "react";
+import CreateIcon from '@mui/icons-material/AddLocationRounded';
+import DeleteIcon from '@mui/icons-material/LocationOffRounded';
+import CheckoutIcon from '@mui/icons-material/PublishedWithChangesSharp';
+import RenameIcon from '@mui/icons-material/EditLocationAltRounded';
 
-const {ipcRenderer} = window.require('electron');
+import { RenameBranchDialog, CreateBranchDialog, DeleteBranchDialog, CheckoutDialog } from './BranchDialog';
 
-const createBranch = async (rootPath, branchName) => {
-    const beforeBranches = await ipcRenderer.invoke('list_branch', rootPath);
-    const result = await ipcRenderer.invoke('create_branch', rootPath, branchName);
-    const nextBranches = await ipcRenderer.invoke('list_branch', rootPath);
+const { ipcRenderer } = window.require('electron');
 
-    console.log('branch list result', beforeBranches);
-    console.log('result', result);
-    console.log('branch list result', nextBranches);
-}
+const CreateFab = styled(Fab)(({ theme }) => ({
+    position: 'fixed',
+    bottom: theme.spacing(34),
+    right: theme.spacing(2),
+    color: '#FFFFFF',
+    backgroundColor: '#666666',
+    '&:hover': {
+        backgroundColor: '#64BDFF',
+    },
+}));
 
-const deleteBranch = async (rootPath, branchName) => {
-    const beforeBranches = await ipcRenderer.invoke('list_branch', rootPath);
-    const result = await ipcRenderer.invoke('delete_branch', rootPath, branchName);
-    const nextBranches = await ipcRenderer.invoke('list_branch', rootPath);
+const DeleteFab = styled(Fab)(({ theme }) => ({
+    position: 'fixed',
+    bottom: theme.spacing(26),
+    right: theme.spacing(2),
+    color: '#FFFFFF',
+    backgroundColor: '#666666',
+    '&:hover': {
+        backgroundColor: '#64BDFF',
+    },
+}));
 
-    console.log('branch list result', beforeBranches);
-    console.log('result', result);
-    console.log('branch list result', nextBranches);
-}
+const RenameFab = styled(Fab)(({ theme }) => ({
+    position: 'fixed',
+    bottom: theme.spacing(10),
+    right: theme.spacing(2),
+    color: '#FFFFFF',
+    backgroundColor: '#666666',
+    '&:hover': {
+        backgroundColor: '#64BDFF',
+    },
+}));
 
-const renameBranch = async (rootPath, branchName, newBranchName) => {
-    const beforeBranches = await ipcRenderer.invoke('list_branch', rootPath);
-    const result = await ipcRenderer.invoke('rename_branch', rootPath, branchName, newBranchName);
-    const nextBranches = await ipcRenderer.invoke('list_branch', rootPath);
-
-    console.log('branch list result', beforeBranches);
-    console.log('result', result);
-    console.log('branch list result', nextBranches);
-}
-
-const checkoutBranch = async (rootPath, branchName) => {
-    const result = await ipcRenderer.invoke('checkout_branch', rootPath, branchName);
-    console.log('result', result);
-}
+const CheckoutFab = styled(Fab)(({ theme }) => ({
+    position: 'fixed',
+    bottom: theme.spacing(2),
+    right: theme.spacing(2),
+    color: '#FFFFFF',
+    backgroundColor: '#666666',
+    '&:hover': {
+        backgroundColor: '#64BDFF',
+    },
+}));
 
 const StyledFab = styled(Fab)(({ theme }) => ({
-    position: 'fixed', 
-    bottom: theme.spacing(18), 
-    right: theme.spacing(2), 
+    position: 'fixed',
+    bottom: theme.spacing(18),
+    right: theme.spacing(2),
     color: '#0086FF',
-    backgroundColor: '#FFFFFF', 
+    backgroundColor: '#FFFFFF',
     '&:hover': {
-      backgroundColor: '#FFFFFF', 
+        backgroundColor: '#FFFFFF',
     },
-  }));
+}));
 
 const BranchFab = () => {
-    const [showButtons, setShowButtons] = useState(false);
-    const [open, setOpen] = useState(false);
-    const [action, setAction] = useState(null);
-    const [branchName, setBranchName] = useState('');
-    const [newBranchName, setNewBranchName] = useState('');
-    const [rootPath, setRootPath] = useState('');
-    const [refreshKey, setRefreshKey] = useState(0);
+    const [openCreate, setOpenCreate] = useState(false);
+    const [openDelete, setOpenDelete] = useState(false);
+    const [openRename, setOpenRename] = useState(false);
+    const [openCheckout, setOpenCheckout] = useState(false);
+    const [clickBranchFab, setClickBranchFab] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
+    const [alertType, setAlertType] = useState('success');
+    const [alertOpen, setAlertOpen] = useState(false);
+    const [branchList, setBranchList] = useState([]);
 
     useEffect(() => {
-        ipcRenderer.on('RootPathChanged', (_, newRootPath) => {
-            setRootPath(newRootPath);
-        });
-        return () => {
-            ipcRenderer.removeAllListeners('RootPathChanged');
-        };
-    }, []);
-
-    const buttonClick = () => {
-        setShowButtons(!showButtons);
-    };
-
-    const handleButtonClick = (buttonAction) => {
-        setOpen(true);
-        setAction(buttonAction);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    const handleSubmit = () => {
-        // 여기에 각 기능에 대한 구현을 추가하세요.
-        if(action === 'Create'){
-            createBranch(rootPath, branchName)
-            console.log(`Action: ${action}, Branch Name: ${branchName}`);
-        } else if(action === 'Delete'){
-            deleteBranch(rootPath, branchName)
-            console.log(`Action: ${action}, Branch Name: ${branchName}`);
-        } else if(action === 'Rename'){
-            renameBranch(rootPath, branchName, newBranchName)
-            console.log(`Action: ${action}, Branch Name: ${branchName}, New Branch Name: ${newBranchName}`);
-        } else if(action === 'Checkout'){
-            checkoutBranch(rootPath, branchName)
-            console.log(`Action: ${action}, Branch Name: ${branchName}`);
+        async function fetchedBranchList() {
+            const Branchs = await ipcRenderer.invoke('GF_branchlist');
+            setBranchList(Branchs);
         }
 
-        handleClose();
-    };
+        fetchedBranchList();
+    }, []);
+
+    const branchBtnClick = () => {
+        if (clickBranchFab) {
+            setClickBranchFab(false);
+        } else {
+            setClickBranchFab(true);
+        }
+    }
+
 
     return (
         <div>
-            <StyledFab aria-label="switch" onClick={buttonClick}>
-                <BranchIcon />
-            </StyledFab>
-            {showButtons && (
-                <div>
-                    <StyledFab
+            <div>
+                <StyledFab aria-label="switch" onClick={() => { branchBtnClick() }}>
+                    <BranchIcon />
+                </StyledFab>
+                <Slide direction="up" in={clickBranchFab} mountOnEnter unmountOnExit>
+                    <CreateFab
                         aria-label="create_button"
-                        style={{ position: 'absolute', right: '260px', fontSize: '12px' }}
-                        onClick={() => handleButtonClick('Create')}
+                        onClick={() => { setOpenCreate(true) }}
                     >
-                        Create
-                    </StyledFab>
-                    <StyledFab
+                        <CreateIcon />
+                    </CreateFab>
+                </Slide>
+                <Slide direction="up" in={clickBranchFab} mountOnEnter unmountOnExit>
+                    <DeleteFab
                         aria-label="delete_button"
-                        style={{ position: 'absolute', right: '200px', fontSize: '12px' }}
-                        onClick={() => handleButtonClick('Delete')}
+                        onClick={() => { setOpenDelete(true) }}
                     >
-                        Delete
-                    </StyledFab>
-                    <StyledFab
+                        <DeleteIcon />
+                    </DeleteFab>
+                </Slide>
+                <Slide direction="up" in={clickBranchFab} mountOnEnter unmountOnExit>
+                    <RenameFab
                         aria-label="rename_button"
-                        style={{ position: 'absolute', right: '140px', fontSize: '12px' }}
-                        onClick={() => handleButtonClick('Rename')}
+                        onClick={() => { setOpenRename(true) }}
                     >
-                        Rename
-                    </StyledFab>
-                    <StyledFab
+                        <RenameIcon />
+                    </RenameFab>
+                </Slide>
+                <Slide direction="up" in={clickBranchFab} mountOnEnter unmountOnExit>
+                    <CheckoutFab
                         aria-label="checkout_button"
-                        style={{ position: 'absolute', right: '80px', fontSize: '12px' }}
-                        onClick={() => handleButtonClick('Checkout')}
+                        onClick={() => { setOpenCheckout(true) }}
                     >
-                        Check Out
-                    </StyledFab>
-                </div>
-            )}
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title">{action} Branch</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        Please enter the branch name.
-                    </DialogContentText>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        label="Branch Name"
-                        type="text"
-                        fullWidth
-                        value={branchName}
-                        onChange={(e) => setBranchName(e.target.value)}
-                    />
-                    {action === 'Rename' && (
-                        <TextField
-                            margin="dense"
-                            label="New Branch Name"
-                            type="text"
-                            fullWidth
-                            value={newBranchName}
-                            onChange={(e) => setNewBranchName(e.target.value)}
-                        />
-                    )}
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose} color="primary">
-                        Cancel
-                    </Button>
-                    <Button onClick={handleSubmit} color="primary">
-                        {action}
-                    </Button>
-                </DialogActions>
-            </Dialog>
+                        <CheckoutIcon />
+                    </CheckoutFab>
+                </Slide>
+            </div>
+            <div>
+                <CreateBranchDialog
+                    open={openCreate}
+                    handleClose={() => { setOpenCreate(false) }}
+                    branchList={branchList}
+                    setAlertMessage={setAlertMessage}
+                    setAlertType={setAlertType}
+                    setAlertOpen={() => { setAlertOpen(true) }}
+                />
+                <RenameBranchDialog
+                    open={openRename}
+                    handleClose={() => { setOpenRename(false) }}
+                    branchList={branchList}
+                    setAlertMessage={setAlertMessage}
+                    setAlertType={setAlertType}
+                    setAlertOpen={() => { setAlertOpen(true) }}
+                />
+                <CheckoutDialog
+                    open={openCheckout}
+                    handleClose={() => { setOpenCheckout(false) }}
+                    branchList={branchList}
+                    setAlertMessage={setAlertMessage}
+                    setAlertType={setAlertType}
+                    setAlertOpen={() => { setAlertOpen(true) }}
+                />
+                <DeleteBranchDialog
+                    open={openDelete}
+                    handleClose={() => { setOpenDelete(false) }}
+                    branchList={branchList}
+                    setAlertMessage={setAlertMessage}
+                    setAlertType={setAlertType}
+                    setAlertOpen={() => { setAlertOpen(true) }}
+                />
+            </div >
+            <Snackbar
+                open={alertOpen}
+                autoHideDuration={6000}
+                onClose={() => setAlertOpen(false)}
+            >
+                <Alert onClose={() => setAlertOpen(false)} severity={alertType} variant="filled">
+                    {alertMessage}
+                </Alert>
+            </Snackbar>
         </div>
     );
 };
