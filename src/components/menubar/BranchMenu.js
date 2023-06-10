@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
-import {useEffect} from "@types/react";
+import {useEffect} from "react";
 
 const {ipcRenderer} = window.require('electron');
 
