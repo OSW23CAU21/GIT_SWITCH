@@ -6,7 +6,8 @@ require('./electron/unstagedstaged/IpcHandler'); // S/US event handlers
 require('./electron/gitfab/IpcHandler'); //Git FAB event handlers
 require('./electron/gitdiff/IpcHandler'); // git diff event handlers
 require('./electron/storedata/IpcHandler'); // store data using electron-store
-require('./electron/githistory/IpcHandler')
+require('./electron/githistory/IpcHandler');
+require('./electron/branch/IpcHandler');
 
 let win;
 
