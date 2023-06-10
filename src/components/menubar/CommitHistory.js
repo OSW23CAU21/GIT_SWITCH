@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Gitgraph } from '@gitgraph/react';
 import { Orientation } from '@gitgraph/core';
-const { ipcRenderer } = window.require('electron');
 
 function GitCommitHistory({ commits, infoOpen, infoClose, setCommitInfo }) {
 
   
 
-  const mouseOn = (oid) => () => {
-    setCommitInfo(`OID: ${oid}`);
+  const mouseOn = (commit, author, oid) => () => {
+    console.log(commit);
+    let date = new Date(author.timestamp);
+    setCommitInfo(`AUTHOR NAME : ${author.name} \n AUTHOR EMAIL : ${author.email}\n MESSAGE:${commit.commit.message} OID: ${oid} \n Commit Time: ${date} `);
     infoOpen();
   }
 
@@ -41,7 +42,7 @@ function GitCommitHistory({ commits, infoOpen, infoClose, setCommitInfo }) {
               subject: commit.commit.message,
               hash: commit.oid,
               author: commit.commit.author.name,
-              onMouseOver: mouseOn(commit.oid),
+              onMouseOver: mouseOn(commit, commit.commit.author, commit.oid),
               onMouseOut: mouseOut
             });
           });
