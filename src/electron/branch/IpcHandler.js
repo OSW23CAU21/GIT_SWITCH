@@ -1,5 +1,5 @@
 const {ipcMain} = require('electron');  //importing electrons
-const {createBranch, deleteBranch, renameBranch, checkoutBranch} = require('./functions')
+const {createBranch, deleteBranch, renameBranch, checkoutBranch, listBranches} = require('./functions')
 
 ipcMain.handle('create_branch', async (event, currentPath, branchName) => {
     return createBranch(currentPath, branchName);
@@ -16,3 +16,7 @@ ipcMain.handle('rename_branch', async (event, currentPath, oldName, newName) => 
 ipcMain.handle('checkout_branch', async (event, currentPath, branchName) => {
     return checkoutBranch(currentPath, branchName);
 });
+
+ipcMain.handle('list_branch', async (event, currentPath) => {
+    return listBranches(currentPath);
+})

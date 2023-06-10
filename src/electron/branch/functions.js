@@ -27,4 +27,14 @@ async function checkoutBranch(rootPath, branchName) {
     console.log(`Checked out branch '${branchName}'.`);
 }
 
-module.exports = {createBranch, deleteBranch, renameBranch, checkoutBranch};
+// branch 리스트 함수
+async function listBranches(rootPath) {
+    try {
+        const branches = await git.listBranches({ fs, dir: rootPath });
+        return branches
+    } catch (error) {
+        console.error('Error listing branches:', error);
+    }
+}
+
+module.exports = {createBranch, deleteBranch, renameBranch, checkoutBranch, listBranches};

@@ -5,18 +5,33 @@ import {useEffect} from "react";
 const {ipcRenderer} = window.require('electron');
 
 const createBranch = async (rootPath, branchName) => {
+    const beforeBranches = await ipcRenderer.invoke('list_branch', rootPath);
     const result = await ipcRenderer.invoke('create_branch', rootPath, branchName);
+    const nextBranches = await ipcRenderer.invoke('list_branch', rootPath);
+
+    console.log('branch list result', beforeBranches);
     console.log('result', result);
+    console.log('branch list result', nextBranches);
 }
 
 const deleteBranch = async (rootPath, branchName) => {
+    const beforeBranches = await ipcRenderer.invoke('list_branch', rootPath);
     const result = await ipcRenderer.invoke('delete_branch', rootPath, branchName);
+    const nextBranches = await ipcRenderer.invoke('list_branch', rootPath);
+
+    console.log('branch list result', beforeBranches);
     console.log('result', result);
+    console.log('branch list result', nextBranches);
 }
 
 const renameBranch = async (rootPath, branchName, newBranchName) => {
+    const beforeBranches = await ipcRenderer.invoke('list_branch', rootPath);
     const result = await ipcRenderer.invoke('rename_branch', rootPath, branchName, newBranchName);
+    const nextBranches = await ipcRenderer.invoke('list_branch', rootPath);
+
+    console.log('branch list result', beforeBranches);
     console.log('result', result);
+    console.log('branch list result', nextBranches);
 }
 
 const checkoutBranch = async (rootPath, branchName) => {
