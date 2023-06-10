@@ -16,6 +16,7 @@ import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { GitCloneDialog } from './GitClone';
 import { SettingsDialog } from './Store';
+import GitBranchDialog from "./BranchMenu";
 
 const { ipcRenderer } = window.require('electron');
 
@@ -89,6 +90,10 @@ const Menubar = () => {
       <SettingsDialog
         open={openSettings}
         handleClose={() => setOpenSettings(false)} />
+      <GitBranchDialog action="Create" />
+      <GitBranchDialog action="Delete" />
+      <GitBranchDialog action="Rename" />
+      <GitBranchDialog action="Checkout" />
     </div>
   );
 };
