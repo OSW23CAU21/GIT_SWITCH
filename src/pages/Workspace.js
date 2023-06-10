@@ -7,10 +7,10 @@ import GitFab from '../components/gitfab/GitFab.js';
 const Workspace = () => {
   return (
     <div>
-      <GitFab/>
       <Menubar />
       <FileManagement />
       <UnstagedStaged />
+      <GitFab/>
     </div>
   );
 };
