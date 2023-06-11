@@ -2,40 +2,53 @@
 
 ## 🧑‍🤝‍🧑 Members
 
-| 학번       | 이름   |
-|----------| ------ |
+| StudentID| Name  |
+|----------| ------|
 | 20182213 | 김명진 |
 | 20195910 | 김유진 |
 | 20172861 | 김재민 |
 | 20165545 | 조현우 |
 
-## 🕰️ Project duration
+## 🕰️ Project Duration
 
  * May 8 ~ June 12
 
+## Used Collaboration tool
 
-## Version
+* Notion : https://little-butternut-09d.notion.site/c4d7e168711945188847b3f08fe8fccd?v=bb19e9db28f5434dad91f54ec12ccc10
+
+* Discord : https://discord.gg/vPn2sy6y
+
+## Library Dependency
 
 ```
- <img src="https://img.shields.io/badge/Electron-#47848F?style=flat&logo=electron&logoColor=white"/>
+ <img src="https://img.shields.io/badge/Electron-47848F?style=plastic&logo=electron&logoColor=white"/>
 electron 
 
 ```
 
-## 프로젝트 세팅법
+## Initial Project Setting
  
 ```
 // git clone
 git clone https://github.com/OSW23CAU21/OSW21_GIT_CLIENT.git
 
-// yarn을 사용 시
-1. yarn install
-2. yarn start
-
-// npm 사용 시
-1. npm install
-2. npm start 
+yarn설치, npm설치, 리액트설치, electron 설치, 버젼, 설정
 ```
+
+* if you want to start yarn 
+```
+$ yarn install
+$ yarn start
+```
+
+* if you want to start npm
+```
+$ npm install
+$ npm start 
+```
+
+
 ## Executable Environment
 ##### MacOs환경에서 정상적으로 가능
 
