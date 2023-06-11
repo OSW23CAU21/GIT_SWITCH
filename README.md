@@ -14,15 +14,21 @@
 
 *  Also, make sure to promise to PR after working on the branch.
 
-### Code of conduct
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md)
+
+### Coding Convention
 ```
-Language : javascript,(typescript)
+Language : javascript
 Formatter : prettier
 Linters : eslint 
 ```
-* Allow import of multiple calsses, functions, variables, etc. in one line. (ex) import { useState, useEffect } from 'react';
+* Allow import of multiple calsses, functions, variables, etc. in one line.
 
-## 🕰️ Project Duration
+  (ex) import { useState, useEffect } from 'react';
+
+### Code of Conduct
+
+## 🕰️ Project Duration(Beta)
 
  * May 8 ~ June 12
 
