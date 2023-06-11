@@ -1,14 +1,26 @@
 <img src="https://capsule-render.vercel.app/api?type=waving&color=auto&height=200&section=header&text=OpenSourceSoftWare-Team21&fontSize=50" />
 
 
-## 🧑‍🤝‍🧑 Members
+## 🧑‍🤝‍🧑 Contributor
 
-| StudentID| Name  |
-|----------| ------|
-| 20182213 | 김명진 |
-| 20195910 | 김유진 |
-| 20172861 | 김재민 |
-| 20165545 | 조현우 |
+| Gitname |
+|----------|
+| Catnap421 |
+| Wayz2u |
+| jamin-sub |
+| jjgene |
+
+* If you want to contribute to us, please write according to the eslint rules. When it is not working according to eslint, it is not compiled.
+
+*  Also, make sure to promise to PR after working on the branch.
+
+### Code of conduct
+```
+Language : javascript,(typescript)
+Formatter : prettier
+Linters : eslint 
+```
+* Allow import of multiple calsses, functions, variables, etc. in one line. (ex) import { useState, useEffect } from 'react';
 
 ## 🕰️ Project Duration
 
@@ -29,6 +41,7 @@
 <img src="https://img.shields.io/badge/npm(9.5.1)-CB3837?style=for-the-badge&logo=npm&logoColor=white"/>
 
 ```
+"isomorphic-git": "^1.23.0"
 @mui/material (for dialogs, buttons, and UIs) "^5.13.0"  
 @chonky fileexplorer (for file explorers) "^2.3.2"  
 @chonky chonky-icon-fontawesome (for icons) "^2.3.2"  
@@ -75,77 +88,8 @@ $ npm start
 * 김재민 : MacOS Apple M1 Pro Monterey 12.5.1(대여)
 * 조현우 : MacOS Apple M1 Max Ventura 13.1
 
-## 👉 Description
-### 1. Start page  
-<img src="./re_image/start_1.png" width="380" height="400">&nbsp;&nbsp;&nbsp; <img src="./re_image/start_2.png" width="380" height="400">  
-
-* When starting the program, all folder isn't specified. (Left)
-* Press `SETDIR` at the top and specify Base through OS file manager. (Right)
----
-<img src="./re_image/start_3.png" width="380" height="400">&nbsp;&nbsp;&nbsp; <img src="./re_image/start_4.png" width="380" height="400">  
-
-* After the Base is designated, the folder informantion is output through the GUI, and it can be freely moved through the file path window at the top by double-clicking. (Left)
-* Base must be a folder containing `.git` to support git functions. (Right)
----
-
-### 2. Commit  
-<img src="./re_image/commit_1.png" width="380" height="400"> &nbsp;&nbsp;&nbsp; <img src="./re_image/commit_2.png" width="380" height="380">  
-
-* Changes have occurred.(when changing folders or file files through an external program, be sure to press `Command` + `R` to refresh.) (Left)
-* If you click the element inside the unstaged window at the bottom and press the button, you can use the staging function as normal adaptation. (Right)
----
-<img src="./re_image/commit_3.png" width="380" height="400"> &nbsp;&nbsp;&nbsp; <img src="./re_image/commit_4.png" width="380" height="380">  
-
-* The console window of the changed content.(Left)
-* If you want to commit the changes, click `COMMIT` at the top.(Right)
----
-<img src="./re_image/commit_5.png" width="380" height="380"> &nbsp;&nbsp;&nbsp; <img src="./re_image/commit_6.png" width="380" height="380">  
-
-* You can commit by entering the CommitMessage, Name, and E-mail. (Left)
-* When Commit is in progress, the elements inside Unsatged and Staged are changed according to the committed content.(Right)
----
-<img src="./re_image/commit_7.png" width="500" height="300">  
-
-* Console Commit log  
----
-
-### 3. Gitinit  
-<img src="./re_image/Init_1.png" width="380" height="380">&nbsp;&nbsp;&nbsp; <img src="./re_image/Init_2.png" width="380" height="400">  
-
-* This directory is in a completely commited state, that is, in an unmodified state. (Left) 
-* There is no `.git` file in the subfolder of that directory, but you can see whether it is gitmanagement or not through Head reference.(Right)
----
-<img src="./re_image/Init_3.png" width="380" height="400">&nbsp;&nbsp;&nbsp; <img src="./re_image/Init_4.png" width="380" height="400">  
-
-* When executed, a pop-up window appears saying that git init is impossible.(Left)
-* `.git` is a directory that exists, but has an untracked foder `testin`.(Right)
----
-<img src="./re_image/Init_5.png" width="380" height="400">&nbsp;&nbsp;&nbsp; <img src="./re_image/Init_6.png" width="380" height="400">  
-
-* When you go down to that folder and try git Init, gitInit is not executed by checking the Base folder.(Left)
-* However, if the Base folder is set to an untracked subfolder, `.git` can be created through gitInit.(Right)
----
-
-### 4. Fileopen
-<img src="./re_image/fileopen_1.png" width="380" height="380">&nbsp;&nbsp;&nbsp; <img src="./re_image/fileopen_2.png" width="380" height="400">  
-
-* When double-clicking a file in the GUI, the file manager screen opens. 
-* The file manager is open when it is under GIT management(Left), but not open when it is not under GIT management(Right).
-* Only one admin option can be set, and it works based on Git commands such as `git rm`, `git restore`.
-* However, if you select Rename and do not enter a name to change, the change will not be applied.
----
-
-
 ## Wireframe
 ![깃와이어프레임](https://github.com/OSW23CAU21/OSW21_GIT_CLIENT/assets/108653152/da455a9c-a975-4124-ae80-b2dcf4d6e15a)
-
-
-## Bugs. 
-1. when you set Base directory in Git space, BaseName is not branch name. 
-2. when you executes files in workspace sometimes it not opens properly. (getting .id error). 
-3. when you opening added file to see git diff, error occurs 
--> solved by changing 'added', 'untracking' files openable status to false 
--> We think alert to when user try to open new files in git space
 
 
 ## for future supports. 
