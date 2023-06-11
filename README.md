@@ -1,4 +1,5 @@
-## OSW23CAU21 
+<img src="https://capsule-render.vercel.app/api?type=waving&color=auto&height=200&section=header&text=OpenSourceSoftWare-Team21&fontSize=50" />
+
 
 ## 🧑‍🤝‍🧑 Members
 
@@ -13,13 +14,13 @@
 
  * May 8 ~ June 12
 
-## Used Collaboration tool
+## ⚙️ Used Collaboration tool
 
 * Notion : https://little-butternut-09d.notion.site/c4d7e168711945188847b3f08fe8fccd?v=bb19e9db28f5434dad91f54ec12ccc10
 
 * Discord : https://discord.gg/vPn2sy6y
 
-## Prerequiste
+## 📌 Prerequiste
 
 <img src="https://img.shields.io/badge/Electron(v25.1.0)-47848F?style=for-the-badge&logo=electron&logoColor=white"/>
 <img src="https://img.shields.io/badge/React(v18.2.0)-61DAFB?style=for-the-badge&logo=react&logoColor=white"/>
@@ -36,9 +37,9 @@
 ```
 
 
-## Initial Project Setting
+## 💻 Initial Project Setting
 
-### You must have both yarn and npm to develop tests!!
+### **You must have both yarn and npm to develop tests.**
 
 
 ### How to use
@@ -47,9 +48,9 @@
 
 * git clone 
 ```
-https://github.com/OSW23CAU21/OSW21_GIT_CLIENT.git
+$ git clone https://github.com/OSW23CAU21/OSW21_GIT_CLIENT.git
 ```
-yarn설치, npm설치, 리액트설치, electron 설치, 버젼, 설정
+
 
 * if you want to start yarn (1.22.19)
 ```
@@ -69,19 +70,12 @@ $ npm start
 
 ### 🍎 Member's test environment
 
-김명진
-- MacOS Apple M1 Pro Ventura 13.0
+* 김명진 : MacOS Apple M1 Pro Ventura 13.0
+* 김유진 : MacOS Apple M1 Air Ventura 13.1
+* 김재민 : MacOS Apple M1 Pro Monterey 12.5.1(대여)
+* 조현우 : MacOS Apple M1 Max Ventura 13.1
 
-김유진
-- MacOS Apple M1 Air Ventura 13.1
-
-김재민 
-- MacOS Apple M1 Pro Monterey 12.5.1(대여)
-
-조현우
-- MacOS Apple M1 Max Ventura 13.1
-
-## Description
+## 👉 Description
 ### 1. Start page  
 <img src="./re_image/start_1.png" width="380" height="400">&nbsp;&nbsp;&nbsp; <img src="./re_image/start_2.png" width="380" height="400">  
 
@@ -144,8 +138,6 @@ $ npm start
 
 ## Wireframe
 ![깃와이어프레임](https://github.com/OSW23CAU21/OSW21_GIT_CLIENT/assets/108653152/da455a9c-a975-4124-ae80-b2dcf4d6e15a)
-
-
 
 
 ## Bugs. 
