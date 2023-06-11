@@ -55,6 +55,7 @@ const Menubar = () => {
   const setDirButtonClick = async () => {
     const rootPath = await ipcRenderer.invoke('MB_getRoot');
     await ipcRenderer.invoke('SD_storepath', rootPath);
+    window.location.reload();
   }
 
   const gitCloneButtonClick = async () => {

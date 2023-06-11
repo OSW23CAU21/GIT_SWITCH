@@ -113,7 +113,8 @@ export const GitCloneDialog = ({ open, handleClose }) => {
                             <CircularProgress size={24} />
                         ) : (
                             "Clone"
-                        )}</Button>
+                        )}
+                        </Button>
                 </DialogActions>
             </Dialog>
             <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>

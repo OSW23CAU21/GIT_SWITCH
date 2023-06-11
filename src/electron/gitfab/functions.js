@@ -1,39 +1,65 @@
 const git = require('isomorphic-git'); // importing Isomorpihic git.
-const {Errors} = require('isomorphic-git');
+const { Errors } = require('isomorphic-git');
 const http = require('isomorphic-git/http/node');
 const fs = require('fs');
 const Store = require('electron-store');
 
 const storage = new Store;
 
-async function getBranchList() {
-  const branchList = await git.listBranches({ fs, dir: storage.get('BasePath') });
-  return branchList;
+const checkInit = async () => {
+    try {
+      await git.resolveRef({ fs, dir: storage.get('BasePath'), ref: 'HEAD' });
+      return true;
+    } catch (err) {
+      return false;
+    }
+};
+
+const gitInit = async() =>{
+  const current = storage.get('BasePath');
+  try {
+    await git.init({ fs, dir: current});
+    return {result : true, message : `${current} is Intialized`};
+  }catch(err){
+    return {result : true, message : err};
+  }
 }
 
-const getBranchName = async (rootPath) => {
-  const branchname = await git.currentBranch({ fs, dir: storage.get('BasePath'), fullname: false });
+async function getBranchList() {
+  try {
+    const branchList = await git.listBranches({ fs, dir: storage.get('BasePath') });
+    return branchList;
+  } catch (err) {
+    return [];
+  }
+}
 
-  return branchname;
+const getBranchName = async () => {
+  try {
+    const branchname = await git.currentBranch({ fs, dir: storage.get('BasePath'), fullname: false });
+    return branchname;
+  } catch {
+    return '';
+  }
 }
 
 async function mergeBranch(current, target) {
   try {
-    const mergeResult = await git.merge({ 
-      fs, 
-      dir: storage.get('BasePath'), 
-      ours: current, 
-      theirs: target, 
-      author:storage.get('AuthorInfo'),
-      abortOnConflict : true 
+    const mergeResult = await git.merge({
+      fs,
+      dir: storage.get('BasePath'),
+      ours: current,
+      theirs: target,
+      author: storage.get('AuthorInfo'),
+      abortOnConflict: true
     });
-    return {result : true, message: `${current} and ${target} are merged successfully`};
+    return { result: true, message: `${current} and ${target} are merged successfully` };
   } catch (err) {
     if (err instanceof Errors.MergeConflictError) {
       let conflictFiles = err.data.filepaths.join(', ');
-      return {result : false, message: 'Merge is aborted, conflict files: ' + conflictFiles};
+      return { result: false, message: 'Merge is aborted, conflict files: ' + conflictFiles };
     } else {
-      return {result : false, message: 'Merge Error: ' + err.message};
+      return { result: false, message: 'Merge Error: ' + err.message };
     }
   }
 };
@@ -101,4 +127,4 @@ async function gitClone(githuburl, accessToken) {
   });
 }
 
-module.exports = { commitStatus, gitCommit, gitClone, getBranchList, getBranchName, mergeBranch };
+module.exports = { commitStatus, gitCommit, gitClone, getBranchList, getBranchName, mergeBranch, gitInit, checkInit };
