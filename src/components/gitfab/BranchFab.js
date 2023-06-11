@@ -87,6 +87,16 @@ const BranchFab = () => {
         fetchedBranchList();
     }, []);
 
+    useEffect(() => {
+        ipcRenderer.on('Refresh_BranchList', async (_) => {
+            const Branchs = await ipcRenderer.invoke('GF_branchlist');
+            setBranchList(Branchs)
+        });
+        return () => {
+            ipcRenderer.removeAllListeners('Refresh_BranchList');
+        };
+    }, [])
+
     const branchBtnClick = () => {
         if (clickBranchFab) {
             setClickBranchFab(false);
