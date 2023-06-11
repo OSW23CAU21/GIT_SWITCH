@@ -21,32 +21,29 @@
 
 ## Prerequiste
 
-node.js (v18.16.0)   
-electron (v25.1.0)  
-react(18.2.0)  
-@mui/material (for dialogs, buttons, and UIs) (5.13.0)  
-@chonky fileexplorer (for file explorers) (2.3.2)  
-@chonky chonky-icon-fontawesome (for icons) (2.3.2)  
-@diff (for getting diff) (5.1.0)  
-@electron-store (for storing data with encryptions) (8.1.0)  
-```
- <img src="https://img.shields.io/badge/Electron-47848F?style=plastic&logo=electron&logoColor=white"/>
-electron (v25.1.0)
-react(18.2.0)
+<img src="https://img.shields.io/badge/Electron(v25.1.0)-47848F?style=for-the-badge&logo=electron&logoColor=white"/>
+<img src="https://img.shields.io/badge/React(v18.2.0)-61DAFB?style=for-the-badge&logo=react&logoColor=white"/>
+<img src="https://img.shields.io/badge/Node.js(v18.16.0)-339933?style=for-the-badge&logo=nodedotjs&logoColor=white"/>
+<img src="https://img.shields.io/badge/Yarn(1.22.19)-2C8EBB?style=for-the-badge&logo=yarn&logoColor=white"/>
+<img src="https://img.shields.io/badge/npm(9.5.1)-CB3837?style=for-the-badge&logo=npm&logoColor=white"/>
 
 ```
+@mui/material (for dialogs, buttons, and UIs) "^5.13.0"  
+@chonky fileexplorer (for file explorers) "^2.3.2"  
+@chonky chonky-icon-fontawesome (for icons) "^2.3.2"  
+@diff (for getting diff) "^5.1.0"  
+@electron-store (for storing data with encryptions) "^8.1.0"  
+```
+
 
 ## Initial Project Setting
- 
-### install
 
-node.js (v18.16.0) >>  
-electron (v25.1.0) >>  
-react(18.2.0) >>  
-yarn(1.22.19) >>  
-npm(9.5.1) >>  
+### You must have both yarn and npm to develop tests!!
+
 
 ### How to use
+
+
 
 * git clone 
 ```
@@ -66,11 +63,11 @@ $ npm install
 $ npm start 
 ```
 
-### Executable Environment
+### 🍎 Executable Environment
 
 * MacOS environment 
 
-### Member's test environment
+### 🍎 Member's test environment
 
 김명진
 - MacOS Apple M1 Pro Ventura 13.0
