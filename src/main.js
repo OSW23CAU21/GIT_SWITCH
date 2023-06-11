@@ -1,4 +1,4 @@
-const {app, BrowserWindow ,ipcMain, dialog } = require('electron');  //importing electrons
+const { app, BrowserWindow, ipcMain, dialog } = require('electron'); //importing electrons
 require('./electron/menubar/IpcHandler'); //menubar event handlers
 require('./electron/filemanagement/IpcHandler'); // GUI Filemanager event handlers
 require('./electron/gitmanagement/IpcHandler'); // GUI Gitmanager event handlers
@@ -18,22 +18,22 @@ function createWindow() {
     titleBarStyle: 'hiddenInset',
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false
-    }
-  })
-  win.loadURL("http://localhost:3000");
-};
+      contextIsolation: false,
+    },
+  });
+  win.loadURL('http://localhost:3000');
+}
 
-function sendRootChanged (rootPath) {
+function sendRootChanged(rootPath) {
   win.webContents.send('MB_getRoot', rootPath);
-};
+}
 
 app.whenReady().then(() => {
-  createWindow()
+  createWindow();
 });
 
 app.on('window-all-closed', function () {
-  if (process.platform !== 'darwin') app.quit()
+  if (process.platform !== 'darwin') app.quit();
 });
 
-module.exports = {sendRootChanged};
+module.exports = { sendRootChanged };
