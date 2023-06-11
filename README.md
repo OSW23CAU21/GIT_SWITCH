@@ -19,8 +19,16 @@
 
 * Discord : https://discord.gg/vPn2sy6y
 
-## Library Dependency
+## Prerequiste
 
+node.js (v18.16.0)   
+electron (v25.1.0)  
+react(18.2.0)  
+@mui/material (for dialogs, buttons, and UIs) (5.13.0)  
+@chonky fileexplorer (for file explorers) (2.3.2)  
+@chonky chonky-icon-fontawesome (for icons) (2.3.2)  
+@diff (for getting diff) (5.1.0)  
+@electron-store (for storing data with encryptions) (8.1.0)  
 ```
  <img src="https://img.shields.io/badge/Electron-47848F?style=plastic&logo=electron&logoColor=white"/>
 electron (v25.1.0)
@@ -32,11 +40,11 @@ react(18.2.0)
  
 ### install
 
-node (v18.16.0)  
-electron (v25.1.0)  
-react(18.2.0)  
-yarn(1.22.19)  
-npm(9.5.1)  
+node.js (v18.16.0) >>  
+electron (v25.1.0) >>  
+react(18.2.0) >>  
+yarn(1.22.19) >>  
+npm(9.5.1) >>  
 
 ### How to use
 
@@ -92,7 +100,7 @@ $ npm start
 ### 2. Commit  
 <img src="./re_image/commit_1.png" width="380" height="400"> &nbsp;&nbsp;&nbsp; <img src="./re_image/commit_2.png" width="380" height="380">  
 
-* Changes have occurred.(when changing folders or file files through an external program, be sure to press `Command + R` to refresh.) (Left)
+* Changes have occurred.(when changing folders or file files through an external program, be sure to press `Command` + `R` to refresh.) (Left)
 * If you click the element inside the unstaged window at the bottom and press the button, you can use the staging function as normal adaptation. (Right)
 ---
 <img src="./re_image/commit_3.png" width="380" height="400"> &nbsp;&nbsp;&nbsp; <img src="./re_image/commit_4.png" width="380" height="380">  
@@ -113,27 +121,27 @@ $ npm start
 ### 3. Gitinit  
 <img src="./re_image/Init_1.png" width="380" height="380">&nbsp;&nbsp;&nbsp; <img src="./re_image/Init_2.png" width="380" height="400">  
 
-* 완벽하게 Commit된 상태 즉 unmodified된 상태의 디렉토리입니다.(Left) 
-* 그 디렉토리의 하위 폴더에는 .git은 없지만, Head참조를 통해 gitmanagement여부를 알 수 있습니다.(Right)
+* This directory is in a completely commited state, that is, in an unmodified state. (Left) 
+* There is no `.git` file in the subfolder of that directory, but you can see whether it is gitmanagement or not through Head reference.(Right)
 ---
 <img src="./re_image/Init_3.png" width="380" height="400">&nbsp;&nbsp;&nbsp; <img src="./re_image/Init_4.png" width="380" height="400">  
 
-* 실행시, git init이 불가능하다는 popup이 발생됩니다.(Left)
-* .git은 존재하지만, untracked 폴더인 testin을 가지는 디렉토리입니다.(Right)
+* When executed, a pop-up window appears saying that git init is impossible.(Left)
+* `.git` is a directory that exists, but has an untracked foder `testin`.(Right)
 ---
 <img src="./re_image/Init_5.png" width="380" height="400">&nbsp;&nbsp;&nbsp; <img src="./re_image/Init_6.png" width="380" height="400">  
 
-* 해당 폴더로 내려가서 git Init을 시도 시 Base폴더를 확인하여 gitInit을 실행하지 않습니다.(Left)
-* 다만 Base 폴더를 untracked인 하위 폴더로 설정시 .git을 gitInit을 통해 생성할 수 있습니다.(Right)
+* When you go down to that folder and try git Init, gitInit is not executed by checking the Base folder.(Left)
+* However, if the Base folder is set to an untracked subfolder, `.git` can be created through gitInit.(Right)
 ---
 
 ### 4. Fileopen
 <img src="./re_image/fileopen_1.png" width="380" height="380">&nbsp;&nbsp;&nbsp; <img src="./re_image/fileopen_2.png" width="380" height="400">  
 
-* GUI내부에서 파일 더블클릭시, 파일관리자 화면이 열립니다. 
-* 파일 관리자는 GIT 관리를 받는 경우 오픈되며(Left) 관리를 받지 않는 경우 오픈되지 않습니다.(Right)
-* 관리자 옵션은 하나만 설정 가능하며, git rm, git restore와 같이 깃 명령어를 기반으로 작동합니다.
-* 단, Rename을 선택하고 변경할 이름을 적지 않는다면, 변경사항은 적용되지 않습니다.
+* When double-clicking a file in the GUI, the file manager screen opens. 
+* The file manager is open when it is under GIT management(Left), but not open when it is not under GIT management(Right).
+* Only one admin option can be set, and it works based on Git commands such as `git rm`, `git restore`.
+* However, if you select Rename and do not enter a name to change, the change will not be applied.
 ---
 
 
@@ -164,13 +172,4 @@ $ npm start
 6. loading User Infos by decryption
 
 
-## Prerequsite. 
-react
-node.js
-electron
 
-@mui/material (for dialogs, buttons, and UIs)
-@chonky fileexplorer (for file explorers)
-@chonky chonky-icon-fontawesome (for icons)
-@diff (for getting diff)
-@electron-store (for storing data with encryptions)
