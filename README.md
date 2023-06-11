@@ -57,23 +57,24 @@ Linters : eslint
 
 ### How to use
 
-
-
 * git clone 
 ```
 $ git clone https://github.com/OSW23CAU21/OSW21_GIT_CLIENT.git
 ```
 
+* must install both yarn and npm  
+```
+$ yarn install
+$ npm install
+```
 
 * if you want to start yarn (1.22.19)
 ```
-$ yarn install
 $ yarn start
 ```
 
 * if you want to start npm(9.5.1)
 ```
-$ npm install
 $ npm start 
 ```
 
