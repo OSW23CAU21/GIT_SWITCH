@@ -97,13 +97,14 @@ const FileBrowsers = ({ directoryPath, setDirectoryPath, folderChain }) => {
 
     useEffect(() => {
         ReadDirectory(directoryPath).then(fetchedFiles => {
+            console.log('fetched', fetchedFiles);
             if (Array.isArray(fetchedFiles)) {
                 setFiles(fetchedFiles);
             } else {
                 console.log("error reading directory");
             }
         });
-    }, [directoryPath]);
+    }, [directoryPath, refreshKey]);
 
 
 

@@ -193,6 +193,7 @@ export const RenameBranchDialog = ({ open, handleClose, branchList, setAlertMess
 
 export const CheckoutDialog = ({ open, handleClose, branchList, setAlertMessage, setAlertType, setAlertOpen }) => {
     const [currentBranch, setCurrentBranch] = useState('');
+    const [refreshKey, setRefreshKey] = useState('')
     const [targetBranch, setTargetBranch] = useState('');
 
     useEffect(() => {
@@ -202,7 +203,7 @@ export const CheckoutDialog = ({ open, handleClose, branchList, setAlertMessage,
         }
 
         fetchedBranchName();
-    }, []);
+    }, [refreshKey]);
 
     const handleCheckout = async () => {
         const result = await ipcRenderer.invoke('BR_checkout', targetBranch);
@@ -211,6 +212,7 @@ export const CheckoutDialog = ({ open, handleClose, branchList, setAlertMessage,
             setTargetBranch(null);
             handleClose();
             setAlertType('success');
+            setRefreshKey(prevRefreshKey => prevRefreshKey + 1);
         } else {
             setAlertMessage(result.message.message);
             setAlertType('error');

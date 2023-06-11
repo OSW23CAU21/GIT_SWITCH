@@ -23,6 +23,7 @@ export const GitCloneDialog = ({ open, handleClose }) => {
     const [gitUrl, setGitUrl] = useState('');
     const [gitToken, setGitToken] = useState('');
     const [showAccessToken, setShowAccessToken] = useState(false);
+    const [alertType, setAlertType] = useState('success');
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -43,8 +44,11 @@ export const GitCloneDialog = ({ open, handleClose }) => {
         setLoading(false);
         handleClose();
         if (result.result){
-            window.location.reload();
+            setAlertType('success');
+            setErrorMessage(result.message);
+            setOpenSnackbar(true);
         }else{
+            setAlertType('error');
             setErrorMessage(result.message);
             setOpenSnackbar(true);
         }
@@ -113,7 +117,7 @@ export const GitCloneDialog = ({ open, handleClose }) => {
                 </DialogActions>
             </Dialog>
             <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
-                <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
+                <Alert onClose={handleCloseSnackbar} severity={alertType} sx={{ width: '100%' }}>
                     {errorMessage}
                 </Alert>
             </Snackbar>

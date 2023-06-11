@@ -24,7 +24,7 @@ const readDirInfo = (currentPath, callback) => {
     if (err) {
       console.error('Error reading directory:', err);
       callback(err, null);
-      return;
+      return [];
     }
 
     const DirContents = [];
@@ -35,7 +35,7 @@ const readDirInfo = (currentPath, callback) => {
       fs.stat(filePath, (err, stats) => {
         if (err) {
           console.error('Error getting file stats:', err);
-          return;
+          return [];
         }
 
         let fileInfo;

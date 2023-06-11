@@ -19,7 +19,14 @@ ipcMain.handle('GF_gitCommitConfirm', async (event, commitMessage, authorName, a
 
 ipcMain.handle('GF_gitClone', async(event, url, tokens) => {
     const result = await gitClone(url, tokens);
-    return result;
+    if (result.result == true) {
+        event.sender.send('Refresh_SUS');
+        event.sender.send('Refresh_GM');
+        event.sender.send('Refresh_FM');
+        return result;
+    } else {
+        return result;
+    }
 });
 
 ipcMain.handle('GF_branchlist', async(event) => {

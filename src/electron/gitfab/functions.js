@@ -27,7 +27,7 @@ async function mergeBranch(current, target) {
       author:storage.get('AuthorInfo'),
       abortOnConflict : true 
     });
-    return {result : true, message: 'merge complete'};
+    return {result : true, message: `${current} and ${target} are merged successfully`};
   } catch (err) {
     if (err instanceof Errors.MergeConflictError) {
       let conflictFiles = err.data.filepaths.join(', ');
