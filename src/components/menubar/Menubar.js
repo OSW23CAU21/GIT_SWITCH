@@ -14,9 +14,10 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
+import HistoryIcon from '@mui/icons-material/History';
 import { GitCloneDialog } from './GitClone';
 import { SettingsDialog } from './Store';
-import GitBranchDialog from "./BranchMenu";
+import HistoryDialog from './HistoryDialog';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -49,6 +50,7 @@ const theme = createTheme({
 const Menubar = () => {
   const [openGitClone, setOpenGitClone] = useState(false);
   const [openSettings, setOpenSettings] = useState(false);
+  const [openHistory, setOpenHistory] = useState(false);
 
   const setDirButtonClick = async () => {
     const rootPath = await ipcRenderer.invoke('MB_getRoot');
@@ -63,6 +65,9 @@ const Menubar = () => {
     setOpenSettings(true);
   }
 
+  const HistoryButtonClick  = async () => {
+    setOpenHistory(true);
+  }
 
   return (
     <div>
@@ -78,6 +83,8 @@ const Menubar = () => {
                 <Button startIcon={<AddIcon />} onClick={gitCloneButtonClick}>
                   Git Clone
                 </Button>
+
+                <Button startIcon={<HistoryIcon />} onClick={HistoryButtonClick} style={{ paddingRight: 0 }} />
                 <Button startIcon={<SettingsIcon />} onClick={SettingsButtonClick} style={{ paddingRight: 0 }} />
               </ButtonGroup>
             </Box>
@@ -90,10 +97,9 @@ const Menubar = () => {
       <SettingsDialog
         open={openSettings}
         handleClose={() => setOpenSettings(false)} />
-      <GitBranchDialog action="Create" />
-      <GitBranchDialog action="Delete" />
-      <GitBranchDialog action="Rename" />
-      <GitBranchDialog action="Checkout" />
+      <HistoryDialog
+        open={openHistory}
+        handleClose={() => setOpenHistory(false)} />
     </div>
   );
 };

@@ -73,6 +73,7 @@ const MergeFab = () => {
                             options={branches}
                             sx={{ width: 300 }}
                             onChange={(event, newValue) => {
+                                if(newValue == null) return;
                                 setTargetBranch(newValue);
                             }}
                             renderInput={(params) => <TextField {...params} label = {'Branch'}/>}

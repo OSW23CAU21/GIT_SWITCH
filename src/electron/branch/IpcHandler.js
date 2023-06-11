@@ -1,22 +1,39 @@
 const {ipcMain} = require('electron');  //importing electrons
 const {createBranch, deleteBranch, renameBranch, checkoutBranch, listBranches} = require('./functions')
 
-ipcMain.handle('create_branch', async (event, currentPath, branchName) => {
-    return createBranch(currentPath, branchName);
+ipcMain.handle('BR_createbranch', async (event, branchName) => {
+    const result = await createBranch(branchName);
+    if(result.result){
+        event.sender.send('Refresh_BranchList');
+    }
+    return result;
 });
 
-ipcMain.handle('delete_branch', async (event, currentPath, branchName) => {
-    return deleteBranch(currentPath, branchName);
+ipcMain.handle('BR_deletebranch', async (event, branchName) => {
+    const result = await deleteBranch(branchName);
+    if(result.result){
+        event.sender.send('Refresh_BranchList');
+    }
+    return result;
 });
 
-ipcMain.handle('rename_branch', async (event, currentPath, oldName, newName) => {
-    return renameBranch(currentPath, oldName, newName);
+ipcMain.handle('BR_renamebranch', async (event, oldName, newName) => {
+    const result = await renameBranch(oldName, newName);
+    if(result.result){
+        event.sender.send('Refresh_BranchList');
+    }
+    return result;
+
 });
 
-ipcMain.handle('checkout_branch', async (event, currentPath, branchName) => {
-    return checkoutBranch(currentPath, branchName);
-});
+ipcMain.handle('BR_checkout', async (event, branchName) => {
+    const result = await checkoutBranch(branchName);
+    if(result.result){
+        event.sender.send('Refresh_SUS');
+        event.sender.send('Refresh_GM');
+        event.sender.send('Refresh_BranchList');
+        event.sender.send('Refresh_FM');
+    }
+    return result;
 
-ipcMain.handle('list_branch', async (event, currentPath) => {
-    return listBranches(currentPath);
-})
+});
