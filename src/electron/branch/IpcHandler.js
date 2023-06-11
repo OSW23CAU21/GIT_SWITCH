@@ -3,6 +3,9 @@ const {createBranch, deleteBranch, renameBranch, checkoutBranch, listBranches} =
 
 ipcMain.handle('BR_createbranch', async (event, branchName) => {
     const result = await createBranch(branchName);
+    if(result.result){
+        event.sender.send('Refresh_BranchList');
+    }
     return result;
 });
 
