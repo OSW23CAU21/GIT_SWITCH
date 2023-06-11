@@ -1,9 +1,24 @@
 const { ipcMain } = require('electron');
-const { commitStatus, gitCommit, gitClone, getBranchList, getBranchName, mergeBranch } = require('./functions');
+const { commitStatus, gitCommit, gitClone, getBranchList, getBranchName, mergeBranch, checkInit, gitInit } = require('./functions');
 
 ipcMain.handle('GF_gitCommitTry', async (event) => {
     return await commitStatus();
 });
+
+ipcMain.handle('GF_checkinit', async (event) => {
+    const result = await checkInit();
+    return result;
+})
+
+ipcMain.handle('GF_gitinit', async (event) => {
+    const result = await gitInit();
+    if(result.result){
+        event.sender.send('Refresh_FM');
+        return result;
+    }else {
+        return result;
+    }
+})
 
 
 ipcMain.handle('GF_gitCommitConfirm', async (event, commitMessage, authorName, authorEmail) => {

@@ -23,7 +23,6 @@ ipcMain.handle('BR_renamebranch', async (event, oldName, newName) => {
         event.sender.send('Refresh_BranchList');
     }
     return result;
-
 });
 
 ipcMain.handle('BR_checkout', async (event, branchName) => {
@@ -31,6 +30,7 @@ ipcMain.handle('BR_checkout', async (event, branchName) => {
     if(result.result){
         event.sender.send('Refresh_SUS');
         event.sender.send('Refresh_GM');
+        event.sender.send('Refresh_branchname', branchName);
         event.sender.send('Refresh_BranchList');
         event.sender.send('Refresh_FM');
     }

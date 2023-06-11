@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Fab, useTheme } from "@mui/material"
+import { Fab, CircularProgress, Snackbar, Alert } from "@mui/material"
 import { styled } from '@mui/system';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import AppleIcon from '@mui/icons-material/Apple';
+import InitIcon from '@mui/icons-material/Add';
 import WorkSpaceBrowser from './WorkSpaceBrowser';
 import GitBrowser from './GitSpaceBrowser';
 
@@ -32,6 +33,18 @@ const StyledGitFab = styled(Fab)(({ theme }) => ({
     },
 }));
 
+const StyledInitFab = styled(Fab)(({ theme }) => ({
+    position: 'fixed',
+    bottom: theme.spacing(2),
+    right: theme.spacing(2),
+    color: '#FFFFFF',
+    backgroundColor: '#666666',
+    '&:hover': {
+        backgroundColor: '#64BDFF',
+    },
+}));
+
+
 const ReadBaseName = async (DirectoryPath) => {
     try {
         const BaseName = await ipcRenderer.invoke('FM_getFolderChain', DirectoryPath);
@@ -56,6 +69,11 @@ const FileManagement = () => {
     const [activeTab, setActiveTab] = useState(0);
     const [directoryPath, setDirectoryPath] = useState('');
     const [folderChain, setFolderChain] = useState([]);
+    const [resultMessage, setResultMessage] = useState('');
+    const [messageType, setMessageType] = useState('success');
+    const [openAlert, setOpenAlert] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [needInit, setNeedInit] = useState(false);
     const [rootFlag, setRootFlag] = useState(false);
 
     useEffect(() => {
@@ -69,15 +87,34 @@ const FileManagement = () => {
     }, []);
 
     useEffect(() => {
-        async function fetchBasePath() {
-          const basePath = await ipcRenderer.invoke('SD_callpath');
-          setRootFlag(true);
-          setDirectoryPath(basePath);
-        }
-    
-        fetchBasePath();
-      }, []);
+        ipcRenderer.on('Refresh_branchname', (_, newBranchName) => {
+            if (activeTab !== 0) {
+                setFolderChain(prevChain => {
+                    const newFolderChain = [...prevChain];
+                    newFolderChain[0] = { ...newFolderChain[0], name: newBranchName };
+                    return newFolderChain;
+                });
+            }
+        });
+        return () => {
+            ipcRenderer.removeAllListeners('Refresh_branchname');
+        };
+    }, [activeTab])
 
+    useEffect(() => {
+        async function fetchBasePath() {
+            const basePath = await ipcRenderer.invoke('SD_callpath');
+            setRootFlag(true);
+            setDirectoryPath(basePath);
+        }
+        async function checkInit() {
+            const result = await ipcRenderer.invoke('GF_checkinit');
+            setNeedInit(!result);
+        }
+
+        fetchBasePath();
+        checkInit();
+    }, []);
 
     useEffect(() => {
         ReadBaseName(directoryPath).then(fetchedName => {
@@ -116,31 +153,69 @@ const FileManagement = () => {
         setActiveTab((prev) => prev === 0 ? 1 : 0);
     }
 
+    const gitInit = async () => {
+        const result = await ipcRenderer.invoke('GF_gitinit');
+        setIsLoading(true);
+        if (result.result) {
+            setMessageType('success');
+            setResultMessage(result.message);
+            setIsLoading(false);
+            setNeedInit(false);
+        } else {
+            setMessageType('error');
+            setResultMessage(result.message.message);
+            setIsLoading(false);
+        }
+        setOpenAlert(true);
+    }
+
     return (
         <div>
-            {
-                activeTab === 0 ?
-                    <>
-                        <WorkSpaceBrowser
-                            directoryPath={directoryPath}
-                            setDirectoryPath={setDirectoryPath}
-                            folderChain={folderChain}
-                        />
-                        <StyledOSFab aria-label="switch" onClick={switchTabs} >
-                            <AppleIcon />
-                        </StyledOSFab>
-                    </> :
-                    <>
-                        <GitBrowser
-                            directoryPath={directoryPath}
-                            setDirectoryPath={setDirectoryPath}
-                            folderChain={folderChain}
-                        />
-                        <StyledGitFab aria-label="switch" onClick={switchTabs} >
-                            <GitHubIcon />
-                        </StyledGitFab>
-                    </>
-            }
+            <div>
+                {
+                    activeTab === 0 ?
+                        <>
+                            <WorkSpaceBrowser
+                                directoryPath={directoryPath}
+                                setDirectoryPath={setDirectoryPath}
+                                folderChain={folderChain}
+                            />
+                            <StyledOSFab aria-label="switch" onClick={switchTabs} >
+                                <AppleIcon />
+                            </StyledOSFab>
+                        </> :
+                        <>
+                            <GitBrowser
+                                directoryPath={directoryPath}
+                                setDirectoryPath={setDirectoryPath}
+                                folderChain={folderChain}
+                            />
+                            <StyledGitFab aria-label="switch" onClick={switchTabs} >
+                                <GitHubIcon />
+                            </StyledGitFab>
+                        </>
+                }
+            </div>
+            {needInit && (
+                <div>
+                    <StyledInitFab aria-label="switch" onClick={gitInit} >
+                        {isLoading ? (
+                            <CircularProgress size={24} />
+                        ) : (
+                            <InitIcon />
+                        )}
+                    </StyledInitFab>
+                    <Snackbar
+                        open={openAlert}
+                        autoHideDuration={6000}
+                        onClose={() => setOpenAlert(false)}
+                    >
+                        <Alert onClose={() => setOpenAlert(false)} severity={messageType} variant="filled">
+                            {resultMessage}
+                        </Alert>
+                    </Snackbar>
+                </div>
+            )}
         </div>
     );
 }

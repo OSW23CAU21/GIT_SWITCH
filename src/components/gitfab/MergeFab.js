@@ -21,6 +21,7 @@ const LabelText = styled(DialogContentText)(({ theme }) => ({
 }));
 
 const MergeFab = () => {
+    const [refreshKey, setRefreshKey] = useState(0);
     const [currentBranch, setCurrentBranch] = useState("");
     const [branches, setBranches] = useState([]);
     const [targetBranch, setTargetBranch] = useState("");
@@ -37,7 +38,16 @@ const MergeFab = () => {
             const otherBranches = results[1].filter(branchName => branchName !== currentBranchName);
             setBranches(otherBranches);
         });
-    }, []);
+    }, [refreshKey]);
+
+    useEffect(() => {
+        ipcRenderer.on('Refresh_BranchList', (_) => {
+            setRefreshKey(prevRefreshKey => prevRefreshKey + 1);
+        });
+        return () => {
+            ipcRenderer.removeAllListeners('Refresh_BranchList');
+        };
+    }, [])
 
     const handleMerge = async () => {
         setIsMerging(true);
