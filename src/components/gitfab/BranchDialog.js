@@ -65,7 +65,21 @@ export const CreateBranchDialog = ({ open, handleClose, branchList, setAlertMess
 };
 
 export const DeleteBranchDialog = ({ open, handleClose, branchList, setAlertMessage, setAlertType, setAlertOpen }) => {
+    const [currentBranch, setCurrentBranch] = useState("");
+    const [filteredBranchList, setFilteredBranchList] = useState([]);
     const [targetBranch, setTargetBranch] = useState("");
+
+
+    useEffect(() => {
+        async function fetchedBranchName() {
+            const BranchName = await ipcRenderer.invoke('GF_branchname');
+            setCurrentBranch(BranchName);
+            const otherBranches = branchList.filter(branchName => branchName !== BranchName);
+            setFilteredBranchList(otherBranches);
+        }
+
+        fetchedBranchName();
+    }, [branchList]);
 
     const handleDelete = async () => {
         const result = await ipcRenderer.invoke('BR_deletebranch', targetBranch);
@@ -89,7 +103,7 @@ export const DeleteBranchDialog = ({ open, handleClose, branchList, setAlertMess
                     <LabelText>Target Branch:</LabelText>
                     <Autocomplete
                         id="branchlist"
-                        options={branchList}
+                        options={filteredBranchList}
                         sx={{ width: 300 }}
                         onChange={(event, newValue) => {
                             setTargetBranch(newValue);
