@@ -66,7 +66,7 @@ const FileBrowsers = ({ directoryPath, setDirectoryPath, folderChain }) => {
             if (data.payload.targetFile.isDir){
                 setDirectoryPath(data.payload.targetFile.id);
             } else {
-                ipcRenderer.invoke('FM_openFile', folderChain[0].id, data.payload.targetFile.id);
+                ipcRenderer.invoke('FM_openFile', data.payload.targetFile.id);
             }
         }
 
