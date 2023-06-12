@@ -84,6 +84,15 @@ $ yarn start
 $ npm start 
 ```
 
+* How to open vscode when opening a file in the app workspace
+```
+1. open vscode
+2. push 'Cmd+shift+P'
+3. type 'install "code"' in Command palette
+4. click 'install "code" command in PATH'
+5. restart zsh or bash. 
+```
+
 ### 🍎 Executable Environment
 
 * MacOS environment 
