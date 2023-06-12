@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Fab, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, List, ListItem } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import {styled} from '@mui/system';
+import { Refresh } from '@mui/icons-material';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -30,6 +31,7 @@ const FileStatusList = ({status, filePaths}) => {
 };
 
 const CommitFab = () => {
+    const [refreshKey, setRefreshKey] =  useState(0);
     const [commitDialogOpen, setCommitDialogOpen] = useState(false);
     const [commitMessage, setCommitMessage] = useState("");
     const [authorName, setAuthorName] = useState("");
@@ -45,7 +47,16 @@ const CommitFab = () => {
         }
 
         getAuthor();
-    }, []);
+    }, [refreshKey]);
+
+    useEffect(() => {
+        ipcRenderer.on('Refresh_author', (_) => {
+            setRefreshKey(prevRefreshKey => prevRefreshKey + 1);
+        });
+        return () => {
+            ipcRenderer.removeAllListeners('Refresh_author');
+        };
+    }, [])
 
     const commitButtonClick = async () => {
         const gitInfo = await ipcRenderer.invoke('GF_gitCommitTry');

@@ -7,10 +7,12 @@ ipcMain.handle('SD_storepath', async (event, rootPath) => {
 
 ipcMain.handle('SD_storetoken', async (event, token) => {
     storeToken(token);
+    event.sender.send('Refresh_token');
 });
 
 ipcMain.handle('SD_storeauthor', async (event, name, email) => {
     storeAuthor(name, email);
+    event.sender.send('Refresh_author');
 });
 
 ipcMain.handle('SD_callpath', async (event) => {

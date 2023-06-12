@@ -8,7 +8,7 @@ const { ipcRenderer } = window.require('electron');
 
 
 const saveTokens = async (tokens) => {
-    const result = await ipcRenderer.invoke('SD_storetoken');
+    const result = await ipcRenderer.invoke('SD_storetoken', tokens);
     return result;
 }
 
@@ -18,6 +18,7 @@ const saveAuthor = async (name, email) => {
 }
 
 export const SettingsDialog = ({ open, handleClose }) => {
+    const [refreshKey, setRefreshKey] = useState(0);
     const [gitToken, setGitToken] = useState('');
     const [authorName, setAuthorName] = useState('');
     const [authorEmail, setAuthorEmail] = useState('');
@@ -33,7 +34,25 @@ export const SettingsDialog = ({ open, handleClose }) => {
         }
 
         getInfos();
-    }, []);
+    }, [refreshKey]);
+
+    useEffect(() => {
+        ipcRenderer.on('Refresh_author', (_) => {
+            setRefreshKey(prevRefreshKey => prevRefreshKey + 1);
+        });
+        return () => {
+            ipcRenderer.removeAllListeners('Refresh_author');
+        };
+    }, [])
+
+    useEffect(() => {
+        ipcRenderer.on('Refresh_token', (_) => {
+            setRefreshKey(prevRefreshKey => prevRefreshKey + 1);
+        });
+        return () => {
+            ipcRenderer.removeAllListeners('Refresh_token');
+        };
+    }, [])
 
     const handleClickShowPassword = () => {
         setShowAccessToken(!showAccessToken);

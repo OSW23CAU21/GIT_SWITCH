@@ -19,6 +19,7 @@ const gitClone = async (url, tokens) => {
 }
 
 export const GitCloneDialog = ({ open, handleClose }) => {
+    const [refreshKey, setRefreshKey] =  useState(0);
     const [loading, setLoading] = useState(false);
     const [gitUrl, setGitUrl] = useState('');
     const [gitToken, setGitToken] = useState('');
@@ -35,7 +36,16 @@ export const GitCloneDialog = ({ open, handleClose }) => {
         }
 
         getTokens();
-    }, []);
+    }, [refreshKey]);
+
+    useEffect(() => {
+        ipcRenderer.on('Refresh_token', (_) => {
+            setRefreshKey(prevRefreshKey => prevRefreshKey + 1);
+        });
+        return () => {
+            ipcRenderer.removeAllListeners('Refresh_token');
+        };
+    }, [])
 
     const handleClone = async () => {
         setLoading(true);
