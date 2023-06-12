@@ -8,6 +8,6 @@
     "react/jsx-key": "warn",
     "react/jsx-pascal-case": "warn",
     "react/no-unused-state": "warn",
-    "prettier/prettier": ["warn", { "singleQuote": true }]
+    "prettier/prettier": ["warn", { "endOfLine": "auto" }]
   }
 }
