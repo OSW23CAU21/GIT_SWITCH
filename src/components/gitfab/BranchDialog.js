@@ -153,7 +153,11 @@ export const RenameBranchDialog = ({ open, handleClose, branchList, setAlertMess
         const result = await ipcRenderer.invoke('BR_renamebranch', targetBranch, newBranchName);
 
         if (result.result) {
-            setAlertMessage(result.message);
+            let message = result.message;
+            if (currentBranch === targetBranch) {
+                message += ' The page will refresh in 3 seconds.';
+            }
+            setAlertMessage(message);
             setTargetBranch(null);
             setNewBranchName('');
             setError(null);
@@ -165,8 +169,12 @@ export const RenameBranchDialog = ({ open, handleClose, branchList, setAlertMess
             setError('Error occurs please check Alert!!');
             setAlertType('error');
         }
+
         if (currentBranch === targetBranch) {
             await checkOut(newBranchName);
+            setTimeout(() => {
+                window.location.reload();
+            }, 3000);
         }
         setAlertOpen();
     }
@@ -246,11 +254,14 @@ export const CheckoutDialog = ({ open, handleClose, branchList, setAlertMessage,
     const handleCheckout = async () => {
         const result = await ipcRenderer.invoke('BR_checkout', targetBranch);
         if (result.result) {
-            setAlertMessage(result.message);
+            setAlertMessage(result.message + 'The page will refresh in 3 seconds');
             setTargetBranch(null);
             handleClose();
             setAlertType('success');
             setRefreshKey(prevRefreshKey => prevRefreshKey + 1);
+            setTimeout(() => {
+                window.location.reload();
+            }, 3000);
         } else {
             setAlertMessage(result.message.message);
             setAlertType('error');

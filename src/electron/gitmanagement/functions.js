@@ -121,7 +121,7 @@ const checkGitStatus = async (rootPath, callback) => {
                 fileEntry.color = color_Added_SUS
             }
         } else if (HeadStatus === 1 && WorkdirStatus === 0) {// deleted
-            fileEntry = { id: filePath, name: path.basename(filePath), color: color_Deleted_US };
+            fileEntry = { id: filePath, name: path.basename(filePath), color: color_Deleted_US, openable : false };
             if (StageStatus === 0) {
                 fileEntry.color = color_Deleted_S
             }

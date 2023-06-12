@@ -74,6 +74,7 @@ const CommitFab = () => {
         await ipcRenderer.invoke('GF_gitCommitConfirm', commitMsg, authorNme, authorEml);
         setCommitMessage('');
         setCommitDialogOpen(false);
+        window.location.reload();
     }
 
     return (

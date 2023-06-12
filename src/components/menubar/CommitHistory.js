@@ -2,9 +2,7 @@ import { useState, useEffect } from 'react';
 import { Gitgraph } from '@gitgraph/react';
 import { Orientation } from '@gitgraph/core';
 
-function GitCommitHistory({ commits, infoOpen, infoClose, setCommitInfo }) {
-
-  
+function GitCommitHistory({ commits, currentBranch, infoOpen, infoClose, setCommitInfo }) {
 
   const mouseOn = (commit, author, oid) => () => {
     console.log(commit);
@@ -36,7 +34,7 @@ function GitCommitHistory({ commits, infoOpen, infoClose, setCommitInfo }) {
     <div style={graphOptions}>
       <Gitgraph options={{ orientation: Orientation.VerticalReverse }}>
         {(gitgraph) => {
-          const master = gitgraph.branch("master");
+          const master = gitgraph.branch(currentBranch);
           commits.forEach((commit, index) => {
             master.commit({
               subject: commit.commit.message,

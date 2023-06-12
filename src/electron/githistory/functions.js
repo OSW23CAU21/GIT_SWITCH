@@ -12,7 +12,7 @@ async function getCommitHistory(branchName) {
         const commits = await git.log({ fs, dir: storage.get('BasePath'), ref: branchName });
         return commits;
     } catch (err) {
-        return {};
+        return [];
     }
 }
 
