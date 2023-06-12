@@ -7,21 +7,26 @@ const Store = require('electron-store');
 const storage = new Store;
 
 const checkInit = async () => {
-    try {
-      await git.resolveRef({ fs, dir: storage.get('BasePath'), ref: 'HEAD' });
+  const basepath = storage.get('BasePath');
+  try {
+    await git.resolveRef({ fs, dir: basepath, ref: 'HEAD' });
+    return true
+  } catch (err) {
+    if (fs.existsSync(path.join(basePath, '.git'))) {
       return true;
-    } catch (err) {
+    } else {
       return false;
     }
+  }
 };
 
-const gitInit = async() =>{
+const gitInit = async () => {
   const current = storage.get('BasePath');
   try {
-    await git.init({ fs, dir: current});
-    return {result : true, message : `${current} is Intialized`};
-  }catch(err){
-    return {result : true, message : err};
+    await git.init({ fs, dir: current });
+    return { result: true, message: `${current} is Intialized` };
+  } catch (err) {
+    return { result: true, message: err };
   }
 }
 
