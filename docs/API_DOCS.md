@@ -1,44 +1,40 @@
 IPCHANDLERS 
 
-## {MVP #1} src/electron/branch/ 
-
-## (#1) 'BR_createbranch' branchnames are not oids)
+## (P2 MVP#1) 'BR_createbranch' (src/electron/branch)
 
 *input : branchName (for creation)
 *output : result {result :  boolean, message : string }
 
-## (#1) 'BR_deletebranch' branchnames are not oids)
+## (P2 MVP#1) 'BR_deletebranch' (src/electron/branch)
 
 *input : branchName (target of deletion)
 *output : result {result : boolean, message : string}
 
-## (#1) 'BR_renamebranch' branchnames are not oids)
+## (P2 MVP#1) 'BR_renamebranch' (src/electron/branch)
 
 *input : oldname, newname
 *output : result {result : boolean, message : string}
 
-## (#1) 'BR_checkout' branchnames are not oids)
+## (P2 MVP#1) 'BR_checkout' (src/electron/branch)
 
 *input : branchName (to checkout)
 *ouptput : result {result : boolean, message : string}
 
 
-## {MVP #3, #4} src/electron/gitfab/
 
-## (#3) 'GF_mergebranch' (branchnames are not oids)
+
+## (P2 MVP#3) 'GF_mergebranch' (src/electron/gitfab)
 
 *input : current (current branch), target (target branch to merge)
 *output : result {result : boolean, message : string}
 
-## (#4) 'GF_gitclone' 
+## (P2 MVP#4) 'GF_gitclone' (src/electron/gitfab)
 
 *input : url (github url), tokens (git hub access token, if needed)
 *output : result {result : boolean, message : string }
 
 
 
-## {MVP #3} src/electron/githistory
-
-## (#3)'GH_gethistory'
+## (P2 MVP#3)'GH_gethistory' (src/electron/githistory)
 *input : branchname (target to check history)
 *output : {commit object from isomorphic-git} more info (https://isomorphic-git.org/docs/en/log)
