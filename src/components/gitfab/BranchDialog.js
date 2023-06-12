@@ -35,7 +35,7 @@ export const CreateBranchDialog = ({ open, handleClose, branchList, setAlertMess
         <div>
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title"> Create Branch</DialogTitle>
-                <Box display="flex" alignItems="center" p ={3}>
+                <Box display="flex" alignItems="center" p={3}>
                     <Box width="35%">
                         <LabelText>Create as:</LabelText>
                     </Box>
@@ -111,9 +111,24 @@ export const DeleteBranchDialog = ({ open, handleClose, branchList, setAlertMess
 };
 
 export const RenameBranchDialog = ({ open, handleClose, branchList, setAlertMessage, setAlertType, setAlertOpen }) => {
+    const [currentBranch, setCurrentBranch] = useState('');
     const [newBranchName, setNewBranchName] = useState('');
     const [targetBranch, setTargetBranch] = useState('');
     const [error, setError] = useState(null);
+
+    useEffect(() => {
+        async function fetchedBranchName() {
+            const BranchName = await ipcRenderer.invoke('GF_branchname');
+            setCurrentBranch(BranchName);
+        }
+
+        fetchedBranchName();
+    }, [branchList]);
+
+    const checkOut = async (target) => {
+        const result = await ipcRenderer.invoke('BR_checkout', target);
+        return result;
+    }
 
     const handleRename = async () => {
         if (!newBranchName || branchList.includes(newBranchName)) {
@@ -122,6 +137,7 @@ export const RenameBranchDialog = ({ open, handleClose, branchList, setAlertMess
         }
 
         const result = await ipcRenderer.invoke('BR_renamebranch', targetBranch, newBranchName);
+
         if (result.result) {
             setAlertMessage(result.message);
             setTargetBranch(null);
@@ -134,6 +150,9 @@ export const RenameBranchDialog = ({ open, handleClose, branchList, setAlertMess
             setNewBranchName('');
             setError('Error occurs please check Alert!!');
             setAlertType('error');
+        }
+        if (currentBranch === targetBranch) {
+            await checkOut(newBranchName);
         }
         setAlertOpen();
     }
@@ -208,7 +227,7 @@ export const CheckoutDialog = ({ open, handleClose, branchList, setAlertMessage,
         fetchedBranchName();
     }, [branchList, refreshKey]);
 
-    
+
 
     const handleCheckout = async () => {
         const result = await ipcRenderer.invoke('BR_checkout', targetBranch);
