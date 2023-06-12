@@ -2,17 +2,20 @@ const git = require('isomorphic-git'); // importing Isomorpihic git.
 const { Errors } = require('isomorphic-git');
 const http = require('isomorphic-git/http/node');
 const fs = require('fs');
+const path = require('path');
 const Store = require('electron-store');
+
 
 const storage = new Store;
 
 const checkInit = async () => {
   const basepath = storage.get('BasePath');
+  if(basepath === undefined) return false;
   try {
     await git.resolveRef({ fs, dir: basepath, ref: 'HEAD' });
     return true
   } catch (err) {
-    if (fs.existsSync(path.join(basePath, '.git'))) {
+    if (fs.existsSync(path.join(basepath, '.git'))) {
       return true;
     } else {
       return false;
@@ -22,6 +25,7 @@ const checkInit = async () => {
 
 const gitInit = async () => {
   const current = storage.get('BasePath');
+  if(current === undefined) return false;
   try {
     await git.init({ fs, dir: current });
     return { result: true, message: `${current} is Intialized` };

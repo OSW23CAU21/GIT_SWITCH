@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogTitle, TextField, Snackbar, Alert, Fade, G
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import GitCommitHistory from './CommitHistory';  // Assuming you have this import
+import { Refresh } from "@mui/icons-material";
 
 const { ipcRenderer } = window.require('electron');
 
@@ -38,7 +39,7 @@ function HistoryDialog({ open, handleClose }) {
                     </IconButton>
                 </DialogTitle>
                 <DialogContent>
-                    <GitCommitHistory commits={commits} infoOpen={alertOpen} infoClose={alertClose} setCommitInfo={setCommitInfo} />
+                    <GitCommitHistory commits={commits} currentBranch = {currentBranch} infoOpen={alertOpen} infoClose={alertClose} setCommitInfo={setCommitInfo} />
                 </DialogContent>
             </Dialog>
             <Snackbar open={infoOpen} autoHideDuration={6000} onClose={alertClose} TransitionComponent={Grow}>
