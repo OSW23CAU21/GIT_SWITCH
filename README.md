@@ -65,7 +65,7 @@ Linters : eslint
 
 * git clone 
 ```
-$ git clone https://github.com/OSW23CAU21/OSW21_GIT_CLIENT.git
+$ git clone https://github.com/OSW23CAU21/GIT_SWITCH.git
 ```
 
 * must install both yarn and npm  
