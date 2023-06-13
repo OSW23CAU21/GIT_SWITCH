@@ -20,7 +20,7 @@ Steps:
 
 1. Click on the 'GIT CLONE' button in the top menu.
 2. Enter the GitHub URL.
-3. Generate a Personal Access Token.
+3. Generate a Personal Access Token.(If cloning repository is public, It can be empty)
 4. Click the 'CLONE' button.
 
 ---
